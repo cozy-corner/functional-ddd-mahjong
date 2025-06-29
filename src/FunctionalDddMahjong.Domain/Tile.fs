@@ -44,6 +44,18 @@ module Tile =
         | East -> 1 | South -> 2 | West -> 3 | North -> 4
         | White -> 5 | Green -> 6 | Red -> 7
     
+    // 牌の完全な比較関数
+    let compare (Tile t1) (Tile t2) =
+        let typeOrder1, typeOrder2 = getTypeOrder t1, getTypeOrder t2
+        if typeOrder1 <> typeOrder2 then compare typeOrder1 typeOrder2
+        else
+            match t1, t2 with
+            | Character n1, Character n2
+            | Circle n1, Circle n2  
+            | Bamboo n1, Bamboo n2 -> compare (getNumberOrder n1) (getNumberOrder n2)
+            | Honor h1, Honor h2 -> compare (getHonorOrder h1) (getHonorOrder h2)
+            | _ -> 0  // Should never happen due to type safety
+    
     // エラー型定義
     type TileError =
         | InvalidNumberValue of int
