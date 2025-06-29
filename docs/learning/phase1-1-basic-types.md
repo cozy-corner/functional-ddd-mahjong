@@ -61,14 +61,29 @@ let tryCreateFromNumber tileType number =
     match number with
     | 1 -> Ok (create (tileType One))
     | 2 -> Ok (create (tileType Two))
-    // ... 3-9
+    | 3 -> Ok (create (tileType Three))
+    | 4 -> Ok (create (tileType Four))
+    | 5 -> Ok (create (tileType Five))
+    | 6 -> Ok (create (tileType Six))
+    | 7 -> Ok (create (tileType Seven))
+    | 8 -> Ok (create (tileType Eight))
+    | 9 -> Ok (create (tileType Nine))
     | n -> Error (InvalidNumberValue n)
+
+// 数字牌の文字列解析ヘルパー
+let private tryParseNumberTile (str: string) tileConstructor =
+    if str.Length = 2 then
+        match System.Int32.TryParse(str.Substring(0, 1)) with
+        | true, v -> tryCreateFromNumber tileConstructor v
+        | _ -> Error (InvalidTileString str)
+    else Error (InvalidTileString str)
 
 // 文字列から牌を作成（例：'1m', '2p', '3s', 'E'）
 let tryParseFromString (str: string) =
     match str.ToUpper() with
-    | s when s.EndsWith("M") && s.Length = 2 ->
-        // 萬子の処理
+    | s when s.EndsWith("M") -> tryParseNumberTile s Character
+    | s when s.EndsWith("P") -> tryParseNumberTile s Circle
+    | s when s.EndsWith("S") -> tryParseNumberTile s Bamboo
     | "E" -> Ok (create (Honor East))
     | _ -> Error (InvalidTileString str)
 ```
