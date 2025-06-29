@@ -76,24 +76,23 @@ module Tile =
         | 9 -> Ok (create (tileType Nine))
         | n -> Error (InvalidNumberValue n)
     
+    // 数字牌の文字列解析ヘルパー
+    let private tryParseNumberTile (str: string) tileConstructor =
+        if str.Length = 2 then
+            match System.Int32.TryParse(str.Substring(0, 1)) with
+            | (true, n) -> tryCreateFromNumber tileConstructor n
+            | _ -> Error (InvalidTileString str)
+        else Error (InvalidTileString str)
+    
     // 文字列から牌を作成（例：'1m', '2p', '3s', 'E'）
     let tryParseFromString (str: string) =
         match str.ToUpper() with
         // 萬子 (Characters)
-        | s when s.EndsWith("M") && s.Length = 2 ->
-            match System.Int32.TryParse(s.Substring(0, 1)) with
-            | (true, n) -> tryCreateFromNumber Character n
-            | _ -> Error (InvalidTileString str)
+        | s when s.EndsWith("M") -> tryParseNumberTile s Character
         // 筒子 (Circles)  
-        | s when s.EndsWith("P") && s.Length = 2 ->
-            match System.Int32.TryParse(s.Substring(0, 1)) with
-            | (true, n) -> tryCreateFromNumber Circle n
-            | _ -> Error (InvalidTileString str)
+        | s when s.EndsWith("P") -> tryParseNumberTile s Circle
         // 索子 (Bamboos)
-        | s when s.EndsWith("S") && s.Length = 2 ->
-            match System.Int32.TryParse(s.Substring(0, 1)) with
-            | (true, n) -> tryCreateFromNumber Bamboo n
-            | _ -> Error (InvalidTileString str)
+        | s when s.EndsWith("S") -> tryParseNumberTile s Bamboo
         // 字牌 (Honors)
         | "E" -> Ok (create (Honor East))
         | "S" -> Ok (create (Honor South)) 
