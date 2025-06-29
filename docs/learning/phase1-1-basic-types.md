@@ -126,7 +126,7 @@ let result5 = tryParseFromString "E"   // Ok(東)
 
 ## ファイル構成
 
-```
+```text
 src/FunctionalDddMahjong.Domain/
 └── Tile.fs  # 今回実装した基本型定義
 ```
