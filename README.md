@@ -8,8 +8,8 @@ This project implements a simplified version of Japanese Mahjong using functiona
 
 ## Documentation
 
-- **[Learning Guide](doc/guide.md)** - Main guide explaining the project's purpose, approach, and functional DDD concepts
-- **[TODO List](doc/todo.md)** - Structured learning path with 4 progressive phases
+- **[Learning Guide](docs/guide.md)** - Main guide explaining the project's purpose, approach, and functional DDD concepts
+- **[TODO List](docs/todo.md)** - Structured learning path with 4 progressive phases
 - **[Setup Guide](docs/setup.md)** - Development environment setup instructions
 - **[Development Workflow](CLAUDE.md)** - Guidelines for development with Claude Code
 
@@ -75,7 +75,7 @@ The project is structured in 4 phases, each building on functional DDD concepts:
 3. **Phase 3**: Yaku detection - Railway-Oriented Programming
 4. **Phase 4**: Score calculation - Workflows and domain events
 
-See [todo.md](doc/todo.md) for detailed tasks and progress tracking.
+See [todo.md](docs/todo.md) for detailed tasks and progress tracking.
 
 ## Development Workflow
 
@@ -104,7 +104,7 @@ This learning project uses a simplified version of Japanese Mahjong:
 - No special hands (7 pairs, 13 orphans)
 - No game state dependencies
 
-For complete details, see the [learning guide](doc/guide.md).
+For complete details, see the [learning guide](docs/guide.md).
 
 ## Contributing
 
