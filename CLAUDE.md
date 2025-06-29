@@ -44,19 +44,24 @@ Git operations are ONLY allowed when user explicitly requests them with commands
 ## Development Guidelines
 
 ### Code Quality Rules
-**MANDATORY**: Run tests before any commit:
-- After implementing code: `dotnet test`
-- **Before final commit**: Ensure all tests pass
+**MANDATORY**: Run checks before any commit:
+- After implementing code: `make test`
+- **Before final commit**: `make check` (runs build, test, and lint)
 - Use project-specific formatting and linting tools
 
 Available commands:
-- `dotnet build` - Build the project
-- `dotnet test` - Run all tests
-- `dotnet run` - Run the application
+- `make build` - Build the project
+- `make test` - Run all tests
+- `make lint` - Check code formatting
+- `make format` - Auto-format code
+- `make check` - Run all pre-commit checks
+- `make watch` - Run tests in watch mode
+- `make clean` - Clean build artifacts
 
 **Workflow**:
-1. Development: `dotnet build && dotnet test`
-2. Pre-commit: Ensure all tests pass
+1. Development: `make build && make test`
+2. Before commit: `make check` (ensures build, tests, and formatting pass)
+3. Fix formatting issues: `make format` if lint fails
 
 ## ⚠️ CRITICAL: Code Quality Policy
 
@@ -65,10 +70,12 @@ Available commands:
 - **NEVER commit failing tests**
 - **NEVER commit code that doesn't build**
 ### ✅ REQUIRED before any commit:
-1. **BUILD**: Ensure code compiles (`dotnet build`)
-2. **TEST**: Run full test suite (`dotnet test`)
-3. **VERIFY**: Ensure all quality checks pass
-4. **COMMIT**: Only after complete verification
+1. **CHECK**: Run `make check` - this will:
+   - Build the project
+   - Run all tests
+   - Verify code formatting
+2. **FIX**: If formatting fails, run `make format`
+3. **COMMIT**: Only after `make check` passes successfully
 
 **Remember**: Manual quality checks are the final gate. Skipping them compromises the entire codebase integrity.
 
@@ -76,7 +83,8 @@ Available commands:
 **Use project's testing framework for all tests**
 
 **Running tests**:
-- `dotnet test` - Run all tests
+- `make test` - Run all tests
+- `make watch` - Run tests in watch mode
 - `dotnet test --filter "TestClassName"` - Run specific test class
 
 ## Functional DDD Development Focus

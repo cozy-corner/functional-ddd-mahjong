@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F675E864-73ED-4204-8FF0-B1F861AABBCB}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FunctionalDddMahjong.Domain", "src\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj", "{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F52C74CC-248B-45EA-B3AD-94C303392B96}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FunctionalDddMahjong.Domain.Tests", "tests\FunctionalDddMahjong.Domain.Tests\FunctionalDddMahjong.Domain.Tests.fsproj", "{245DE4E4-BB5E-4C1B-BAB9-C44D9F0EBB8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245DE4E4-BB5E-4C1B-BAB9-C44D9F0EBB8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245DE4E4-BB5E-4C1B-BAB9-C44D9F0EBB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245DE4E4-BB5E-4C1B-BAB9-C44D9F0EBB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245DE4E4-BB5E-4C1B-BAB9-C44D9F0EBB8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB} = {F675E864-73ED-4204-8FF0-B1F861AABBCB}
+		{245DE4E4-BB5E-4C1B-BAB9-C44D9F0EBB8B} = {F52C74CC-248B-45EA-B3AD-94C303392B96}
+	EndGlobalSection
+EndGlobal
