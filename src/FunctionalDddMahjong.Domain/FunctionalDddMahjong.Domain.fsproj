@@ -3,10 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="Tile.fs" />
+    <Compile Include="Meld.fs" />
+    <Compile Include="Pair.fs" />
     <Compile Include="Hand.fs" />
   </ItemGroup>
 

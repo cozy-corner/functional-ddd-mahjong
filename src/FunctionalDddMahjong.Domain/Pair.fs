@@ -19,7 +19,7 @@ module Pair =
     // ペアに含まれる牌をリストで取得
     let getPairTiles pair =
         match getPairValue pair with
-        | Pair(t1, t2) -> [ t1; t2 ]
+        | PairType.Pair(t1, t2) -> [ t1; t2 ]
 
     // エラー型定義
     type PairError =
@@ -31,7 +31,7 @@ module Pair =
         match tiles with
         | [ t1; t2 ] ->
             if t1 = t2 then
-                Ok(createPair (Pair(t1, t2)))
+                Ok(createPair (PairType.Pair(t1, t2)))
             else
                 Error(NotPair tiles)
         | _ -> Error(InsufficientTiles(List.length tiles))
