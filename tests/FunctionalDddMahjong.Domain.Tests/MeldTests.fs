@@ -19,7 +19,9 @@ module MeldTests =
                   createTile (Character Two)
                   createTile (Character Three) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isOk result)
 
             match result with
@@ -36,7 +38,9 @@ module MeldTests =
                   createTile (Circle Eight)
                   createTile (Circle Nine) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isOk result)
 
         [<Fact>]
@@ -46,7 +50,9 @@ module MeldTests =
                   createTile (Bamboo Five)
                   createTile (Bamboo Six) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isOk result)
 
         [<Theory>]
@@ -70,7 +76,9 @@ module MeldTests =
                   createTile (Character(List.item (n2 - 1) numberValues))
                   createTile (Character(List.item (n3 - 1) numberValues)) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isError result)
 
         [<Fact>]
@@ -80,7 +88,9 @@ module MeldTests =
                   createTile (Circle Two)
                   createTile (Bamboo Three) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isError result)
 
         [<Fact>]
@@ -90,7 +100,9 @@ module MeldTests =
                   createTile (Honor South)
                   createTile (Honor West) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isError result)
 
         [<Fact>]
@@ -99,7 +111,9 @@ module MeldTests =
                 [ createTile (Character One)
                   createTile (Character Two) ]
 
-            let result = FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+            let result =
+                FunctionalDddMahjong.Domain.Meld.tryCreateSequence tiles
+
             Assert.True(Result.isError result)
 
     // 刻子テスト
