@@ -140,3 +140,99 @@ let ``discard non-existent tile returns TileNotFound error`` () =
         | Error _ -> failwith "Should return TileNotFound error"
     | Ok(Ready _) -> failwith "Expected Waiting hand"
     | Error _ -> failwith "Failed to create initial hand"
+
+// countTile function tests
+[<Fact>]
+let ``countTile returns 3 when hand contains three identical tiles`` () =
+    let tiles =
+        [ createTile (Character One)
+          createTile (Character One)
+          createTile (Character One)
+          createTile (Character Two)
+          createTile (Circle One)
+          createTile (Circle Two)
+          createTile (Circle Three)
+          createTile (Bamboo One)
+          createTile (Bamboo Two)
+          createTile (Bamboo Three)
+          createTile (Honor East)
+          createTile (Honor South)
+          createTile (Honor West) ]
+
+    match tryCreateFromDeal tiles with
+    | Ok hand -> Assert.Equal(3, countTile (createTile (Character One)) hand)
+    | Error _ -> failwith "Failed to create hand"
+
+[<Fact>]
+let ``countTile returns 1 when hand contains single tile`` () =
+    match createWaitingHand () with
+    | Ok hand ->
+        // createWaitingHand creates a hand with one of each tile
+        Assert.Equal(1, countTile (createTile (Character One)) hand)
+        Assert.Equal(1, countTile (createTile (Honor East)) hand)
+    | Error _ -> failwith "Failed to create hand"
+
+[<Fact>]
+let ``countTile returns 0 when tile not in hand`` () =
+    match createWaitingHand () with
+    | Ok hand ->
+        let nonExistentTile =
+            createTile (Honor White)
+
+        Assert.Equal(0, countTile nonExistentTile hand)
+    | Error _ -> failwith "Failed to create hand"
+
+[<Fact>]
+let ``countTile increments count after drawing same tile`` () =
+    match createWaitingHand () with
+    | Ok(Waiting _ as waitingHand) ->
+        let existingTile =
+            createTile (Character One)
+
+        let countBefore =
+            countTile existingTile waitingHand
+
+        let readyHand =
+            draw existingTile waitingHand
+
+        let countAfter =
+            countTile existingTile readyHand
+
+        Assert.Equal(countBefore + 1, countAfter)
+    | Ok(Ready _) -> failwith "Expected Waiting hand"
+    | Error _ -> failwith "Failed to create initial hand"
+
+// Edge case tests
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(12)>]
+[<InlineData(14)>]
+[<InlineData(15)>]
+[<InlineData(20)>]
+let ``tryCreateFromDeal returns InvalidTileCount error when tile count is not 13`` (tileCount: int) =
+    let tiles =
+        List.init tileCount (fun _ -> createTile (Character One))
+
+    match tryCreateFromDeal tiles with
+    | Error(InvalidTileCount(actual, expected)) ->
+        Assert.Equal(tileCount, actual)
+        Assert.Contains("13", expected)
+    | Ok _ -> failwith $"Should fail with {tileCount} tiles"
+
+[<Fact>]
+let ``isWaiting returns true for 13-tile hand and isReady returns true for 14-tile hand`` () =
+    match createWaitingHand () with
+    | Ok(Waiting _ as waitingHand) ->
+        // 13-tile Waiting hand
+        Assert.True(isWaiting waitingHand)
+        Assert.False(isReady waitingHand)
+
+        // 14-tile Ready hand after draw
+        let readyHand =
+            draw (createTile (Honor White)) waitingHand
+
+        Assert.False(isWaiting readyHand)
+        Assert.True(isReady readyHand)
+    | Ok(Ready _) -> failwith "Expected Waiting hand"
+    | Error _ -> failwith "Failed to create hand"
