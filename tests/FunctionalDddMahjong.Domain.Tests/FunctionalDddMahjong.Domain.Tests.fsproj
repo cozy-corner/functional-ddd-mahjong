@@ -12,6 +12,8 @@
     <Compile Include="Tests.fs" />
     <Compile Include="TileTests.fs" />
     <Compile Include="HandTests.fs" />
+    <Compile Include="MeldTests.fs" />
+    <Compile Include="PairTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
