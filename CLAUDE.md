@@ -87,6 +87,26 @@ Available commands:
 - `make watch` - Run tests in watch mode
 - `dotnet test --filter "TestClassName"` - Run specific test class
 
+## ⚠️ CRITICAL: F# Project File Management
+
+### F# File Addition Rules
+**NEVER forget to add new .fs files to .fsproj**
+
+**❌ COMMON MISTAKE - Creating files without adding to project**:
+```bash
+# Creating Meld.fs and Pair.fs but forgetting to add them to:
+# - src/FunctionalDddMahjong.Domain/FunctionalDddMahjong.Domain.fsproj
+# - tests/FunctionalDddMahjong.Domain.Tests/FunctionalDddMahjong.Domain.Tests.fsproj
+```
+
+**✅ REQUIRED WORKFLOW**:
+1. **Create .fs file**
+2. **IMMEDIATELY add to appropriate .fsproj file**
+3. **Respect dependency order**: `Tile.fs` → `Meld.fs, Pair.fs` → `Hand.fs`
+4. **Verify with**: `dotnet build`
+
+**Why**: F# requires explicit file inclusion and dependency order unlike C#
+
 ## Functional DDD Development Focus
 
 ### Code Quality Principles
