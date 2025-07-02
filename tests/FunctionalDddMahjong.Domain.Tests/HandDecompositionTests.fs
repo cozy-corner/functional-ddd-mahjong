@@ -82,19 +82,6 @@ let ``tryDecompose finds simple winning hand with sequences and triplet`` () =
 
     match result with
     | Some(melds, pair) ->
-        // デバッグ出力
-        let meldsStr =
-            melds
-            |> List.map meldToString
-            |> String.concat ", "
-
-        let pairStr =
-            getPairTiles pair
-            |> List.map toString
-            |> String.concat ", "
-
-        printfn $"Decomposition found: Melds=[{meldsStr}], Pair=[{pairStr}]"
-
         // 4面子あることを確認
         Assert.Equal(4, List.length melds)
 
