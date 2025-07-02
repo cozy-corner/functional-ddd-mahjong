@@ -10,6 +10,7 @@
     <Compile Include="Tile.fs" />
     <Compile Include="Meld.fs" />
     <Compile Include="Pair.fs" />
+    <Compile Include="MeldDecomposition.fs" />
     <Compile Include="Hand.fs" />
   </ItemGroup>
 
