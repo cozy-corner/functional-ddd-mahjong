@@ -32,7 +32,7 @@ let ``tryCreateFromDeal with 13 tiles returns Ok Waiting hand`` () =
     | Ok hand ->
         Assert.Equal(13, count hand)
         Assert.True(isWaiting hand)
-    | Error _ -> failwith "Should succeed with 13 tiles"
+    | Error e -> failwith $"Should succeed with 13 tiles, but got error: {e}"
 
 [<Fact>]
 let ``tryCreateFromDeal with 12 tiles returns InvalidTileCount error`` () =
@@ -51,9 +51,11 @@ let ``tryCreateFromDeal with 12 tiles returns InvalidTileCount error`` () =
           createTile (Honor West) ]
 
     match tryCreateFromDeal tiles with
-    | Error(InvalidTileCount(12, _)) -> ()
+    | Error(InvalidTileCount(actual, expected)) ->
+        Assert.Equal(12, actual)
+        Assert.Equal("13 (initial deal)", expected)
     | Ok _ -> failwith "Should fail with 12 tiles"
-    | Error _ -> failwith "Should return InvalidTileCount error"
+    | Error e -> failwith $"Should return InvalidTileCount error, but got {e}"
 
 [<Fact>]
 let ``draw on Waiting hand adds tile and returns Ready hand`` () =
@@ -65,8 +67,8 @@ let ``draw on Waiting hand adds tile and returns Ready hand`` () =
         Assert.Equal(14, count readyHand)
         Assert.True(isReady readyHand)
         Assert.True(contains newTile readyHand)
-    | Ok(Ready _) -> failwith "Expected Waiting hand"
-    | Error _ -> failwith "Failed to create initial hand"
+    | Ok(Ready _) -> failwith "Expected Waiting hand, but got Ready hand"
+    | Error e -> failwith $"Failed to create initial hand: {e}"
 
 [<Fact>]
 let ``discard on Ready hand removes tile and returns Waiting hand`` () =
@@ -82,9 +84,9 @@ let ``discard on Ready hand removes tile and returns Waiting hand`` () =
             Assert.Equal(13, count newHand)
             Assert.True(isWaiting newHand)
             Assert.False(contains tileToDiscard newHand)
-        | Error _ -> failwith "Should succeed discarding from Ready hand"
-    | Ok(Ready _) -> failwith "Expected Waiting hand"
-    | Error _ -> failwith "Failed to create initial hand"
+        | Error e -> failwith $"Should succeed discarding from Ready hand, but got: {e}"
+    | Ok(Ready _) -> failwith "Expected Waiting hand, but got Ready hand"
+    | Error e -> failwith $"Failed to create initial hand: {e}"
 
 [<Fact>]
 let ``contains returns true for existing tile and false for non-existing tile`` () =
@@ -98,7 +100,7 @@ let ``contains returns true for existing tile and false for non-existing tile`` 
 
         Assert.True(contains existingTile hand)
         Assert.False(contains nonExistentTile hand)
-    | Error _ -> failwith "Failed to create initial hand"
+    | Error e -> failwith $"Failed to create initial hand: {e}"
 
 [<Fact>]
 let ``sort arranges tiles in order Characters then Circles then Bamboos then Honors`` () =
@@ -125,7 +127,7 @@ let ``sort arranges tiles in order Characters then Circles then Bamboos then Hon
         Assert.Equal(createTile (Character Two), sortedTiles.[1])
         Assert.Equal(createTile (Character Three), sortedTiles.[2])
         Assert.Equal(createTile (Circle One), sortedTiles.[3])
-    | Error _ -> failwith "Failed to create hand"
+    | Error e -> failwith $"Failed to create hand: {e}"
 
 [<Fact>]
 let ``discard non-existent tile returns TileNotFound error`` () =
@@ -134,12 +136,15 @@ let ``discard non-existent tile returns TileNotFound error`` () =
         let drawnTile = createTile (Honor White)
         let readyHand = draw drawnTile waitingHand
 
-        match discard (createTile (Honor Green)) readyHand with
-        | Error(TileNotFound _) -> ()
+        let nonExistentTile =
+            createTile (Honor Green)
+
+        match discard nonExistentTile readyHand with
+        | Error(TileNotFound tile) -> Assert.Equal(nonExistentTile, tile)
         | Ok _ -> failwith "Should fail discarding non-existent tile"
-        | Error _ -> failwith "Should return TileNotFound error"
-    | Ok(Ready _) -> failwith "Expected Waiting hand"
-    | Error _ -> failwith "Failed to create initial hand"
+        | Error e -> failwith $"Should return TileNotFound error, but got {e}"
+    | Ok(Ready _) -> failwith "Expected Waiting hand, but got Ready hand"
+    | Error e -> failwith $"Failed to create initial hand: {e}"
 
 // countTile function tests
 [<Fact>]
@@ -161,7 +166,7 @@ let ``countTile returns 3 when hand contains three identical tiles`` () =
 
     match tryCreateFromDeal tiles with
     | Ok hand -> Assert.Equal(3, countTile (createTile (Character One)) hand)
-    | Error _ -> failwith "Failed to create hand"
+    | Error e -> failwith $"Failed to create hand: {e}"
 
 [<Fact>]
 let ``countTile returns 1 when hand contains single tile`` () =
@@ -170,7 +175,7 @@ let ``countTile returns 1 when hand contains single tile`` () =
         // createWaitingHand creates a hand with one of each tile
         Assert.Equal(1, countTile (createTile (Character One)) hand)
         Assert.Equal(1, countTile (createTile (Honor East)) hand)
-    | Error _ -> failwith "Failed to create hand"
+    | Error e -> failwith $"Failed to create hand: {e}"
 
 [<Fact>]
 let ``countTile returns 0 when tile not in hand`` () =
@@ -180,7 +185,7 @@ let ``countTile returns 0 when tile not in hand`` () =
             createTile (Honor White)
 
         Assert.Equal(0, countTile nonExistentTile hand)
-    | Error _ -> failwith "Failed to create hand"
+    | Error e -> failwith $"Failed to create hand: {e}"
 
 [<Fact>]
 let ``countTile increments count after drawing same tile`` () =
@@ -199,8 +204,8 @@ let ``countTile increments count after drawing same tile`` () =
             countTile existingTile readyHand
 
         Assert.Equal(countBefore + 1, countAfter)
-    | Ok(Ready _) -> failwith "Expected Waiting hand"
-    | Error _ -> failwith "Failed to create initial hand"
+    | Ok(Ready _) -> failwith "Expected Waiting hand, but got Ready hand"
+    | Error e -> failwith $"Failed to create initial hand: {e}"
 
 // Edge case tests
 [<Theory>]
@@ -234,5 +239,5 @@ let ``isWaiting returns true for 13-tile hand and isReady returns true for 14-ti
 
         Assert.False(isWaiting readyHand)
         Assert.True(isReady readyHand)
-    | Ok(Ready _) -> failwith "Expected Waiting hand"
-    | Error _ -> failwith "Failed to create hand"
+    | Ok(Ready _) -> failwith "Expected Waiting hand, but got Ready hand"
+    | Error e -> failwith $"Failed to create hand: {e}"
