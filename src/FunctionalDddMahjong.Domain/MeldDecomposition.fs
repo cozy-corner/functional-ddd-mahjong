@@ -116,7 +116,8 @@ module internal MeldDecomposition =
                     tripletCandidates @ sequenceCandidates
 
                 // 各候補を試してバックトラック
-                let rec tryMelds = function
+                let rec tryMelds =
+                    function
                     | [] -> None
                     | (meld, newRemaining) :: rest ->
                         match backtrack newRemaining (meld :: foundMelds) with
