@@ -61,28 +61,71 @@ module internal MeldDecomposition =
                     else
                         None))
 
-    // シンプルな貪欲法で4面子を探す
+    // バックトラッキングで4面子を探す
     let private tryFindFourMelds tiles =
-        let rec loop remaining foundMelds =
-            if List.length foundMelds = 4 then
-                if List.isEmpty remaining then
-                    Some foundMelds
-                else
-                    None // 余り牌がある
-            else
-                // まず刻子を探す
-                match tryFindTriplet remaining with
-                | Some(triplet, newRemaining) -> loop newRemaining (triplet :: foundMelds)
-                | None ->
-                    // 次に順子を探す
-                    let sorted =
-                        List.sortWith Tile.compare remaining
+        let rec backtrack remaining foundMelds =
+            match List.length foundMelds, List.length remaining with
+            // 4面子見つかった場合
+            | 4, 0 -> Some foundMelds // 完成
+            | 4, _ -> None // 余り牌がある
+            // 残り牌が足りない場合
+            | _, n when n < 3 -> None
+            // 面子を探す
+            | _ ->
+                // 現在の牌をソート
+                let sorted =
+                    List.sortWith Tile.compare remaining
 
-                    match tryFindSequence sorted with
-                    | Some(seq, newRemaining) -> loop newRemaining (seq :: foundMelds)
-                    | None -> None // 面子が作れない
+                // 可能な面子候補を生成
+                let tripletCandidates =
+                    match tryFindTriplet sorted with
+                    | Some(triplet, rest) -> [ (triplet, rest) ]
+                    | None -> []
 
-        loop tiles []
+                let sequenceCandidates =
+                    match sorted with
+                    | first :: rest ->
+                        // 再帰的にリストを処理する内部関数
+                        let rec findSequences remainingForT2 acc =
+                            match remainingForT2 with
+                            | [] -> acc
+                            | t2 :: tailForT3 ->
+                                let sequencesWithT2 =
+                                    tailForT3
+                                    |> List.choose (fun t3 ->
+                                        if first <> t2 && t2 <> t3 then
+                                            match Meld.tryCreateSequence [ first; t2; t3 ] with
+                                            | Ok seq ->
+                                                let remaining =
+                                                    sorted
+                                                    |> removeItems first 1
+                                                    |> removeItems t2 1
+                                                    |> removeItems t3 1
+
+                                                Some(seq, remaining)
+                                            | Error _ -> None
+                                        else
+                                            None)
+
+                                findSequences tailForT3 (sequencesWithT2 @ acc)
+
+                        findSequences rest [] |> List.rev
+                    | [] -> []
+
+                let candidates =
+                    tripletCandidates @ sequenceCandidates
+
+                // 各候補を試してバックトラック
+                let rec tryMelds = function
+                    | [] -> None
+                    | (meld, newRemaining) :: rest ->
+                        match backtrack newRemaining (meld :: foundMelds) with
+                        | Some result -> Some result
+                        | None -> tryMelds rest
+
+                tryMelds candidates
+
+        backtrack tiles []
 
     // 内部実装: 14牌を4面子1雀頭に分解
     let tryDecomposeInternal tiles =

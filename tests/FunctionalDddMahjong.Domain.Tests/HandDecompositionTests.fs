@@ -214,3 +214,60 @@ let ``tryDecompose handles mixed suits correctly`` () =
         )
 
     | None -> failwith "Expected successful decomposition"
+
+// バックトラッキングが必要な様々なパターンをテスト
+[<Theory>]
+// ケース1: 22234567m - 222を刻子にすると失敗、22を雀頭にして234+567で成功
+[<InlineData("2m,2m,2m,3m,4m,5m,6m,7m,1p,1p,1p,E,E,E", "234,567", "2萬")>]
+// ケース2: 112233m（一盃口）- 11を雀頭にすると失敗、123+123で成功
+[<InlineData("1m,1m,2m,2m,3m,3m,5p,6p,7p,1s,1s,1s,N,N", "123,123", "北")>]
+// ケース3: 234456m - 44を雀頭にすると失敗、234+456で成功
+[<InlineData("2m,3m,4m,4m,5m,6m,1p,2p,3p,7s,8s,9s,E,E", "234,456", "東")>]
+let ``tryDecompose handles various backtracking patterns``
+    (tileList: string)
+    (expectedSequences: string)
+    (expectedPair: string)
+    =
+    // カンマ区切りの文字列から牌を作成
+    let tiles =
+        tileList.Split(',') |> Array.toList |> createTiles
+
+    let hand = createReadyHand tiles
+
+    match tryDecompose hand with
+    | Some(melds, pair) ->
+        // 4面子あることを確認
+        Assert.Equal(4, List.length melds)
+
+        // 期待される順子が含まれることを確認
+        let meldStrings =
+            melds
+            |> List.map (fun meld ->
+                match getMeldValue meld with
+                | Sequence(t1, t2, t3) ->
+                    let tiles = [ t1; t2; t3 ]
+                    // 数字のみ抽出（例: "2萬3萬4萬" → "234"）
+                    tiles
+                    |> List.map (fun t ->
+                        match getValue t with
+                        | Character n -> string (getNumberOrder n)
+                        | Circle n -> string (getNumberOrder n)
+                        | Bamboo n -> string (getNumberOrder n)
+                        | _ -> "")
+                    |> String.concat ""
+                | _ -> "")
+            |> List.filter ((<>) "")
+
+        // 期待される順子パターンをチェック
+        expectedSequences.Split(',')
+        |> Array.iter (fun expected -> Assert.Contains(expected, meldStrings))
+
+        // 雀頭の確認
+        let pairTiles = getPairTiles pair
+
+        Assert.True(
+            pairTiles
+            |> List.forall (fun t -> toString t = expectedPair)
+        )
+
+    | None -> failwith "Expected successful decomposition with backtracking"
