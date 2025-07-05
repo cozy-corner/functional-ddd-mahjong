@@ -115,25 +115,25 @@ module Tile =
         else
             Error(InvalidTileString str)
 
-    // 文字列から牌を作成（明確な区別：1文字=風牌、2文字=数牌/三元牌）
+    // 文字列から牌を作成（明確な区別：1文字=風牌・三元牌、2文字=数牌）
     let tryParseFromString (str: string) =
         let upperStr = str.ToUpper()
 
         match upperStr.Length with
         | 1 ->
-            // 風牌（1文字）
+            // 風牌・三元牌（1文字）
             match upperStr with
             | "E" -> Ok(create (Honor East))
             | "S" -> Ok(create (Honor South))
             | "W" -> Ok(create (Honor West))
             | "N" -> Ok(create (Honor North))
+            | "H" -> Ok(create (Honor White))
+            | "G" -> Ok(create (Honor Green))
+            | "R" -> Ok(create (Honor Red))
             | _ -> Error(InvalidTileString str)
         | 2 ->
-            // 数牌（例：1M, 2P, 3S）または三元牌（WH, GR, RD）
+            // 数牌（例：1M, 2P, 3S）
             match upperStr with
-            | "WH" -> Ok(create (Honor White))
-            | "GR" -> Ok(create (Honor Green))
-            | "RD" -> Ok(create (Honor Red))
             | s when s.EndsWith("M") -> tryParseNumberTile s Character
             | s when s.EndsWith("P") -> tryParseNumberTile s Circle
             | s when s.EndsWith("S") -> tryParseNumberTile s Bamboo
@@ -168,6 +168,6 @@ module Tile =
             | South -> "S"
             | West -> "W"
             | North -> "N"
-            | White -> "WH"
-            | Green -> "GR"
-            | Red -> "RD"
+            | White -> "H"
+            | Green -> "G"
+            | Red -> "R"
