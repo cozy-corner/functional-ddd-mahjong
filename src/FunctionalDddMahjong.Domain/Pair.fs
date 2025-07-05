@@ -62,3 +62,28 @@ module Pair =
 
         let pairTypeStr = getPairType pair
         sprintf "%s: [%s]" pairTypeStr (String.concat ", " tileStrings)
+
+    // ペアを短縮表記で表現（例: "22m", "NN"）
+    let pairToShortString pair =
+        let tiles = getPairTiles pair
+
+        match tiles with
+        | [ t1; _ ] ->
+            match Tile.getValue t1 with
+            | Character n ->
+                let num = string (Tile.getNumberOrder n)
+                num + num + "m"
+            | Circle n ->
+                let num = string (Tile.getNumberOrder n)
+                num + num + "p"
+            | Bamboo n ->
+                let num = string (Tile.getNumberOrder n)
+                num + num + "s"
+            | Honor East -> "EE"
+            | Honor South -> "SS"
+            | Honor West -> "WW"
+            | Honor North -> "NN"
+            | Honor White -> "WHWH"
+            | Honor Green -> "GRGR"
+            | Honor Red -> "RDRD"
+        | _ -> ""
