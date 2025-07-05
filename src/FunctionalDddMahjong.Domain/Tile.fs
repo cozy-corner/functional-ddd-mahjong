@@ -155,3 +155,19 @@ module Tile =
             | White -> "白"
             | Green -> "發"
             | Red -> "中"
+
+    // 牌を英語略記で表現（入力形式と同じ）
+    let toShortString tile =
+        match getValue tile with
+        | Character n -> sprintf "%dm" (getNumberOrder n)
+        | Circle n -> sprintf "%dp" (getNumberOrder n)
+        | Bamboo n -> sprintf "%ds" (getNumberOrder n)
+        | Honor h ->
+            match h with
+            | East -> "E"
+            | South -> "S"
+            | West -> "W"
+            | North -> "N"
+            | White -> "WH"
+            | Green -> "GR"
+            | Red -> "RD"
