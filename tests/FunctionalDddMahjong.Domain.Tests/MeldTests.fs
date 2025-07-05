@@ -226,3 +226,104 @@ module MeldTests =
                 Assert.Contains("Triplet", str)
                 Assert.Contains("東", str)
             | Error _ -> Assert.True(false, "Expected valid triplet")
+
+        [<Theory>]
+        [<InlineData("Character,One,Two,Three", "123m")>]
+        [<InlineData("Circle,Five,Six,Seven", "567p")>]
+        [<InlineData("Bamboo,Seven,Eight,Nine", "789s")>]
+        let ``meldToShortString should display sequence correctly`` (tilesData: string, expected: string) =
+            let parts = tilesData.Split(',')
+            let tileType = parts.[0]
+            let numbers = parts.[1..3]
+
+            let tiles =
+                numbers
+                |> Array.map (fun numStr ->
+                    let numberValue =
+                        match numStr with
+                        | "One" -> One
+                        | "Two" -> Two
+                        | "Three" -> Three
+                        | "Four" -> Four
+                        | "Five" -> Five
+                        | "Six" -> Six
+                        | "Seven" -> Seven
+                        | "Eight" -> Eight
+                        | "Nine" -> Nine
+                        | _ -> failwith "Invalid number"
+
+                    match tileType with
+                    | "Character" -> createTile (Character numberValue)
+                    | "Circle" -> createTile (Circle numberValue)
+                    | "Bamboo" -> createTile (Bamboo numberValue)
+                    | _ -> failwith "Invalid tile type")
+                |> Array.toList
+
+            match tryCreateSequence tiles with
+            | Ok meld ->
+                let str = meldToShortString meld
+                Assert.Equal(expected, str)
+            | Error _ -> Assert.True(false, "Expected valid sequence")
+
+        [<Theory>]
+        [<InlineData("Character,Five", "555m")>]
+        [<InlineData("Circle,Two", "222p")>]
+        [<InlineData("Bamboo,Nine", "999s")>]
+        let ``meldToShortString should display number triplet correctly`` (tileData: string, expected: string) =
+            let parts = tileData.Split(',')
+            let tileType = parts.[0]
+            let numberStr = parts.[1]
+
+            let numberValue =
+                match numberStr with
+                | "One" -> One
+                | "Two" -> Two
+                | "Three" -> Three
+                | "Four" -> Four
+                | "Five" -> Five
+                | "Six" -> Six
+                | "Seven" -> Seven
+                | "Eight" -> Eight
+                | "Nine" -> Nine
+                | _ -> failwith "Invalid number"
+
+            let tile =
+                match tileType with
+                | "Character" -> createTile (Character numberValue)
+                | "Circle" -> createTile (Circle numberValue)
+                | "Bamboo" -> createTile (Bamboo numberValue)
+                | _ -> failwith "Invalid tile type"
+
+            let tiles = [ tile; tile; tile ]
+
+            match tryCreateTriplet tiles with
+            | Ok meld ->
+                let str = meldToShortString meld
+                Assert.Equal(expected, str)
+            | Error _ -> Assert.True(false, "Expected valid triplet")
+
+        [<Theory>]
+        [<InlineData("East", "EEE")>]
+        [<InlineData("South", "SSS")>]
+        [<InlineData("West", "WWW")>]
+        [<InlineData("North", "NNN")>]
+        let ``meldToShortString should display honor triplet correctly`` (honorStr: string, expected: string) =
+            let honorValue =
+                match honorStr with
+                | "East" -> East
+                | "South" -> South
+                | "West" -> West
+                | "North" -> North
+                | "White" -> White
+                | "Green" -> Green
+                | "Red" -> Red
+                | _ -> failwith "Invalid honor"
+
+            let tile = createTile (Honor honorValue)
+            let tiles = [ tile; tile; tile ]
+
+            match tryCreateTriplet tiles with
+            | Ok meld ->
+                let str = meldToShortString meld
+                Assert.Equal(expected, str)
+            | Error _ -> Assert.True(false, "Expected valid triplet")

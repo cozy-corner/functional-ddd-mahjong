@@ -83,3 +83,66 @@ module PairTests =
             Assert.Contains("Pair", str)
             Assert.Contains("白", str)
         | Error _ -> Assert.True(false, "Expected valid pair")
+
+    [<Theory>]
+    [<InlineData("Character,Two", "22m")>]
+    [<InlineData("Circle,Five", "55p")>]
+    [<InlineData("Bamboo,Nine", "99s")>]
+    let ``pairToShortString should display number pair correctly`` (tileData: string, expected: string) =
+        let parts = tileData.Split(',')
+        let tileType = parts.[0]
+        let numberStr = parts.[1]
+
+        let numberValue =
+            match numberStr with
+            | "One" -> One
+            | "Two" -> Two
+            | "Three" -> Three
+            | "Four" -> Four
+            | "Five" -> Five
+            | "Six" -> Six
+            | "Seven" -> Seven
+            | "Eight" -> Eight
+            | "Nine" -> Nine
+            | _ -> failwith "Invalid number"
+
+        let tile =
+            match tileType with
+            | "Character" -> createTile (Character numberValue)
+            | "Circle" -> createTile (Circle numberValue)
+            | "Bamboo" -> createTile (Bamboo numberValue)
+            | _ -> failwith "Invalid tile type"
+
+        let tiles = [ tile; tile ]
+
+        match tryCreatePair tiles with
+        | Ok pair ->
+            let str = pairToShortString pair
+            Assert.Equal(expected, str)
+        | Error _ -> Assert.True(false, "Expected valid pair")
+
+    [<Theory>]
+    [<InlineData("North", "NN")>]
+    [<InlineData("East", "EE")>]
+    [<InlineData("South", "SS")>]
+    [<InlineData("West", "WW")>]
+    let ``pairToShortString should display honor pair correctly`` (honorStr: string, expected: string) =
+        let honorValue =
+            match honorStr with
+            | "East" -> East
+            | "South" -> South
+            | "West" -> West
+            | "North" -> North
+            | "White" -> White
+            | "Green" -> Green
+            | "Red" -> Red
+            | _ -> failwith "Invalid honor"
+
+        let tile = createTile (Honor honorValue)
+        let tiles = [ tile; tile ]
+
+        match tryCreatePair tiles with
+        | Ok pair ->
+            let str = pairToShortString pair
+            Assert.Equal(expected, str)
+        | Error _ -> Assert.True(false, "Expected valid pair")
