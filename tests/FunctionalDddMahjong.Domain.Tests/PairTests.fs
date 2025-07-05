@@ -126,6 +126,9 @@ module PairTests =
     [<InlineData("East", "EE")>]
     [<InlineData("South", "SS")>]
     [<InlineData("West", "WW")>]
+    [<InlineData("White", "WHWH")>]
+    [<InlineData("Green", "GRGR")>]
+    [<InlineData("Red", "RDRD")>]
     let ``pairToShortString should display honor pair correctly`` (honorStr: string, expected: string) =
         let honorValue =
             match honorStr with
