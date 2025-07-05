@@ -259,10 +259,10 @@ let ``tryParseFromString parses Wind tiles`` (input: string, expectedHonor: stri
     | Error _ -> failwithf "Should parse %s successfully" input
 
 [<Theory>]
-[<InlineData("WH", "White")>]
-[<InlineData("GR", "Green")>]
-[<InlineData("RD", "Red")>]
-[<InlineData("wh", "White")>]
+[<InlineData("H", "White")>]
+[<InlineData("G", "Green")>]
+[<InlineData("R", "Red")>]
+[<InlineData("h", "White")>]
 let ``tryParseFromString parses Dragon tiles`` (input: string, expectedHonor: string) =
     let expected =
         match expectedHonor with
@@ -408,9 +408,9 @@ let ``toShortString returns correct string for Bamboo tiles`` (numberStr: string
 [<InlineData("South", "S")>]
 [<InlineData("West", "W")>]
 [<InlineData("North", "N")>]
-[<InlineData("White", "WH")>]
-[<InlineData("Green", "GR")>]
-[<InlineData("Red", "RD")>]
+[<InlineData("White", "H")>]
+[<InlineData("Green", "G")>]
+[<InlineData("Red", "R")>]
 let ``toShortString returns correct string for Honor tiles`` (honorStr: string, expected: string) =
     let honorValue =
         match honorStr with
