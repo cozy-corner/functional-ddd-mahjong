@@ -223,6 +223,8 @@ let ``tryDecompose handles mixed suits correctly`` () =
 [<InlineData("1m,1m,2m,2m,3m,3m,5p,6p,7p,1s,1s,1s,N,N", "123,123", "北")>]
 // ケース3: 234456m - 44を雀頭にすると失敗、234+456で成功
 [<InlineData("2m,3m,4m,4m,5m,6m,1p,2p,3p,7s,8s,9s,E,E", "234,456", "東")>]
+// ケース4: 12223m - 22を刻子にすると失敗、123+22で成功
+[<InlineData("1m,2m,2m,2m,3m,1p,2p,3p,7s,8s,9s,E,E,E", "123", "2萬")>]
 let ``tryDecompose handles various backtracking patterns``
     (tileList: string)
     (expectedSequences: string)
