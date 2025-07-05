@@ -9,6 +9,40 @@ module MeldTests =
     // テスト用のヘルパー関数
     let createTile tileType = create tileType
 
+    // 文字列から数値への変換ヘルパー
+    let private parseNumberValue (numberStr: string) =
+        match numberStr with
+        | "One" -> One
+        | "Two" -> Two
+        | "Three" -> Three
+        | "Four" -> Four
+        | "Five" -> Five
+        | "Six" -> Six
+        | "Seven" -> Seven
+        | "Eight" -> Eight
+        | "Nine" -> Nine
+        | _ -> failwith $"Invalid number: {numberStr}"
+
+    // 文字列から名誉牌への変換ヘルパー
+    let private parseHonorValue (honorStr: string) =
+        match honorStr with
+        | "East" -> East
+        | "South" -> South
+        | "West" -> West
+        | "North" -> North
+        | "White" -> White
+        | "Green" -> Green
+        | "Red" -> Red
+        | _ -> failwith $"Invalid honor: {honorStr}"
+
+    // 数字牌作成ヘルパー
+    let private createNumberTile (tileType: string) (numberValue: NumberValue) =
+        match tileType with
+        | "Character" -> createTile (Character numberValue)
+        | "Circle" -> createTile (Circle numberValue)
+        | "Bamboo" -> createTile (Bamboo numberValue)
+        | _ -> failwith $"Invalid tile type: {tileType}"
+
     // 順子テスト
     module SequenceTests =
 
@@ -239,24 +273,8 @@ module MeldTests =
             let tiles =
                 numbers
                 |> Array.map (fun numStr ->
-                    let numberValue =
-                        match numStr with
-                        | "One" -> One
-                        | "Two" -> Two
-                        | "Three" -> Three
-                        | "Four" -> Four
-                        | "Five" -> Five
-                        | "Six" -> Six
-                        | "Seven" -> Seven
-                        | "Eight" -> Eight
-                        | "Nine" -> Nine
-                        | _ -> failwith "Invalid number"
-
-                    match tileType with
-                    | "Character" -> createTile (Character numberValue)
-                    | "Circle" -> createTile (Circle numberValue)
-                    | "Bamboo" -> createTile (Bamboo numberValue)
-                    | _ -> failwith "Invalid tile type")
+                    let numberValue = parseNumberValue numStr
+                    createNumberTile tileType numberValue)
                 |> Array.toList
 
             match tryCreateSequence tiles with
@@ -274,25 +292,8 @@ module MeldTests =
             let tileType = parts.[0]
             let numberStr = parts.[1]
 
-            let numberValue =
-                match numberStr with
-                | "One" -> One
-                | "Two" -> Two
-                | "Three" -> Three
-                | "Four" -> Four
-                | "Five" -> Five
-                | "Six" -> Six
-                | "Seven" -> Seven
-                | "Eight" -> Eight
-                | "Nine" -> Nine
-                | _ -> failwith "Invalid number"
-
-            let tile =
-                match tileType with
-                | "Character" -> createTile (Character numberValue)
-                | "Circle" -> createTile (Circle numberValue)
-                | "Bamboo" -> createTile (Bamboo numberValue)
-                | _ -> failwith "Invalid tile type"
+            let numberValue = parseNumberValue numberStr
+            let tile = createNumberTile tileType numberValue
 
             let tiles = [ tile; tile; tile ]
 
@@ -311,17 +312,7 @@ module MeldTests =
         [<InlineData("Green", "GRGRGR")>]
         [<InlineData("Red", "RDRDRD")>]
         let ``meldToShortString should display honor triplet correctly`` (honorStr: string, expected: string) =
-            let honorValue =
-                match honorStr with
-                | "East" -> East
-                | "South" -> South
-                | "West" -> West
-                | "North" -> North
-                | "White" -> White
-                | "Green" -> Green
-                | "Red" -> Red
-                | _ -> failwith "Invalid honor"
-
+            let honorValue = parseHonorValue honorStr
             let tile = createTile (Honor honorValue)
             let tiles = [ tile; tile; tile ]
 
