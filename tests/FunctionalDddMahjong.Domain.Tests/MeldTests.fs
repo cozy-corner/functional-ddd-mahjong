@@ -310,9 +310,9 @@ module MeldTests =
         [<InlineData("South", "SSS")>]
         [<InlineData("West", "WWW")>]
         [<InlineData("North", "NNN")>]
-        [<InlineData("White", "WHWHWH")>]
-        [<InlineData("Green", "GRGRGR")>]
-        [<InlineData("Red", "RDRDRD")>]
+        [<InlineData("White", "HHH")>]
+        [<InlineData("Green", "GGG")>]
+        [<InlineData("Red", "RRR")>]
         let ``meldToShortString should display honor triplet correctly`` (honorStr: string, expected: string) =
             let honorValue = parseHonorValue honorStr
             let tile = createTile (Honor honorValue)
