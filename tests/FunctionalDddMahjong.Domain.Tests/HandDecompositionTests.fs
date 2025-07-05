@@ -91,17 +91,17 @@ let ``tryDecompose finds simple winning hand with sequences and triplet`` () =
 
         let actualPairString =
             pairTiles
-            |> List.map toString
-            |> String.concat ", "
+            |> List.map toShortString
+            |> String.concat ","
 
-        Assert.Equal("2索, 2索", actualPairString)
+        Assert.Equal("2s,2s", actualPairString)
 
     | None ->
         // デバッグ: 手牌の内容を出力
         let handTiles =
             getTiles hand
-            |> List.map toString
-            |> String.concat ", "
+            |> List.map toShortString
+            |> String.concat ","
 
         failwith $"Expected successful decomposition. Hand tiles: [{handTiles}]"
 
@@ -147,7 +147,7 @@ let ``tryDecompose finds winning hand with all triplets`` () =
 
         Assert.True(
             pairTiles
-            |> List.forall (fun t -> toString t = "5萬")
+            |> List.forall (fun t -> toShortString t = "5m")
         )
 
     | None -> failwith "Expected successful decomposition"
@@ -210,7 +210,7 @@ let ``tryDecompose handles mixed suits correctly`` () =
 
         Assert.True(
             pairTiles
-            |> List.forall (fun t -> toString t = "北")
+            |> List.forall (fun t -> toShortString t = "N")
         )
 
     | None -> failwith "Expected successful decomposition"
@@ -218,13 +218,13 @@ let ``tryDecompose handles mixed suits correctly`` () =
 // バックトラッキングが必要な様々なパターンをテスト
 [<Theory>]
 // ケース1: 22234567m - 222を刻子にすると失敗、22を雀頭にして234+567で成功
-[<InlineData("2m,2m,2m,3m,4m,5m,6m,7m,1p,1p,1p,E,E,E", "234,567", "2萬")>]
+[<InlineData("2m,2m,2m,3m,4m,5m,6m,7m,1p,1p,1p,E,E,E", "234,567", "2m")>]
 // ケース2: 112233m（一盃口）- 11を雀頭にすると失敗、123+123で成功
-[<InlineData("1m,1m,2m,2m,3m,3m,5p,6p,7p,1s,1s,1s,N,N", "123,123", "北")>]
+[<InlineData("1m,1m,2m,2m,3m,3m,5p,6p,7p,1s,1s,1s,N,N", "123,123", "N")>]
 // ケース3: 234456m - 44を雀頭にすると失敗、234+456で成功
-[<InlineData("2m,3m,4m,4m,5m,6m,1p,2p,3p,7s,8s,9s,E,E", "234,456", "東")>]
+[<InlineData("2m,3m,4m,4m,5m,6m,1p,2p,3p,7s,8s,9s,E,E", "234,456", "E")>]
 // ケース4: 12223m - 22を刻子にすると失敗、123+22で成功
-[<InlineData("1m,2m,2m,2m,3m,1p,2p,3p,7s,8s,9s,E,E,E", "123", "2萬")>]
+[<InlineData("1m,2m,2m,2m,3m,1p,2p,3p,7s,8s,9s,E,E,E", "123", "2m")>]
 let ``tryDecompose handles various backtracking patterns``
     (tileList: string)
     (expectedSequences: string)
@@ -269,7 +269,7 @@ let ``tryDecompose handles various backtracking patterns``
 
         Assert.True(
             pairTiles
-            |> List.forall (fun t -> toString t = expectedPair)
+            |> List.forall (fun t -> toShortString t = expectedPair)
         )
 
     | None -> failwith "Expected successful decomposition with backtracking"

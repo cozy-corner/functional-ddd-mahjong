@@ -131,3 +131,45 @@ module Meld =
 
         let meldTypeStr = getMeldType meld
         sprintf "%s: [%s]" meldTypeStr (String.concat ", " tileStrings)
+
+    // 面子を短縮表記で表現（例: "234m", "111p", "EEE"）
+    let meldToShortString meld =
+        match getMeldValue meld with
+        | Sequence(t1, t2, t3) ->
+            let numbers =
+                [ t1; t2; t3 ]
+                |> List.map (fun t ->
+                    match Tile.getValue t with
+                    | Character n -> string (Tile.getNumberOrder n)
+                    | Circle n -> string (Tile.getNumberOrder n)
+                    | Bamboo n -> string (Tile.getNumberOrder n)
+                    | _ -> "")
+                |> String.concat ""
+
+            let suffix =
+                match Tile.getValue t1 with
+                | Character _ -> "m"
+                | Circle _ -> "p"
+                | Bamboo _ -> "s"
+                | _ -> ""
+
+            numbers + suffix
+
+        | Triplet(t1, _, _) ->
+            match Tile.getValue t1 with
+            | Character n ->
+                let num = string (Tile.getNumberOrder n)
+                num + num + num + "m"
+            | Circle n ->
+                let num = string (Tile.getNumberOrder n)
+                num + num + num + "p"
+            | Bamboo n ->
+                let num = string (Tile.getNumberOrder n)
+                num + num + num + "s"
+            | Honor East -> "EEE"
+            | Honor South -> "SSS"
+            | Honor West -> "WWW"
+            | Honor North -> "NNN"
+            | Honor White -> "WHWHWH"
+            | Honor Green -> "GRGRGR"
+            | Honor Red -> "RDRDRD"

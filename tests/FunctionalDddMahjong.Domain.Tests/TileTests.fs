@@ -357,3 +357,71 @@ let ``toString returns correct string for Honor tiles`` (honorStr: string, expec
 
     let tile = create (Honor honorValue)
     Assert.Equal(expected, toString tile)
+
+[<Theory>]
+[<InlineData("One", "1m")>]
+[<InlineData("Five", "5m")>]
+[<InlineData("Nine", "9m")>]
+let ``toShortString returns correct string for Character tiles`` (numberStr: string, expected: string) =
+    let numberValue =
+        match numberStr with
+        | "One" -> One
+        | "Five" -> Five
+        | "Nine" -> Nine
+        | _ -> failwith "Invalid number"
+
+    let tile = create (Character numberValue)
+    Assert.Equal(expected, toShortString tile)
+
+[<Theory>]
+[<InlineData("One", "1p")>]
+[<InlineData("Five", "5p")>]
+[<InlineData("Nine", "9p")>]
+let ``toShortString returns correct string for Circle tiles`` (numberStr: string, expected: string) =
+    let numberValue =
+        match numberStr with
+        | "One" -> One
+        | "Five" -> Five
+        | "Nine" -> Nine
+        | _ -> failwith "Invalid number"
+
+    let tile = create (Circle numberValue)
+    Assert.Equal(expected, toShortString tile)
+
+[<Theory>]
+[<InlineData("One", "1s")>]
+[<InlineData("Five", "5s")>]
+[<InlineData("Nine", "9s")>]
+let ``toShortString returns correct string for Bamboo tiles`` (numberStr: string, expected: string) =
+    let numberValue =
+        match numberStr with
+        | "One" -> One
+        | "Five" -> Five
+        | "Nine" -> Nine
+        | _ -> failwith "Invalid number"
+
+    let tile = create (Bamboo numberValue)
+    Assert.Equal(expected, toShortString tile)
+
+[<Theory>]
+[<InlineData("East", "E")>]
+[<InlineData("South", "S")>]
+[<InlineData("West", "W")>]
+[<InlineData("North", "N")>]
+[<InlineData("White", "WH")>]
+[<InlineData("Green", "GR")>]
+[<InlineData("Red", "RD")>]
+let ``toShortString returns correct string for Honor tiles`` (honorStr: string, expected: string) =
+    let honorValue =
+        match honorStr with
+        | "East" -> East
+        | "South" -> South
+        | "West" -> West
+        | "North" -> North
+        | "White" -> White
+        | "Green" -> Green
+        | "Red" -> Red
+        | _ -> failwith "Invalid honor"
+
+    let tile = create (Honor honorValue)
+    Assert.Equal(expected, toShortString tile)
