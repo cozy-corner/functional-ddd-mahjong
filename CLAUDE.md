@@ -178,3 +178,50 @@ git stash show stash@{0} --stat   # See change summary
 - Learning progress TODO: `todo.md`
 - Phase-specific notes should be documented in commit messages
 - Keep track of functional DDD concepts learned in each phase
+
+## ⚠️ CRITICAL: PR Review Comment Check (MUST DO FIRST)
+When working on PRs, **ALWAYS execute these two commands FIRST**:
+
+```bash
+# Command 1: Get PR overview
+gh pr view {pr_number} --comments
+
+# Command 2: Get line-by-line comments (CRITICAL - often missed)
+gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
+```
+
+**WARNING**: Skipping Command 2 will cause you to miss important code-level feedback and bugs.
+
+## PR Comment Response Rules
+
+### Required Steps (Execute in this order)
+1. **Get PR review comments**: `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments`
+2. **Report all comments to user**: List all comments with their IDs and content
+3. **Wait for user instructions**: DO NOT reply to any comments without explicit user approval
+4. **Reply only when instructed**: 
+   ```bash
+   gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --method POST \
+     --field body="User-provided reply message" \
+     --field in_reply_to={comment_id}
+   ```
+
+### ⚠️ CRITICAL: Never Auto-Reply
+- **NEVER** reply to comments without explicit user instruction
+- **ALWAYS** ask user how to respond to each comment
+- **WAIT** for user to provide specific reply text or approve "won't implement" responses
+
+### ⚠️ FORBIDDEN Commands (Never Use)
+Do not use these commands (Reason: Posts to PR body or overwrites existing comments)
+- `gh pr comment {pr_number} --body="..."`
+- `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --method POST --field body="..."` (without in_reply_to)
+- `gh api repos/{owner}/{repo}/pulls/comments/{comment_id} --method POST` (overwrites existing comment)
+
+### Response Requirements (When User Instructs)
+1. **Reply to EVERY comment** user requests response to
+2. **For fixes**: 
+   - Implement the fix
+   - Commit with descriptive message
+   - Push to remote branch
+   - Include commit IDs in reply: `Fixed in commit [abc123](link)`
+3. **For non-fixes**: Mark status clearly as "Won't implement" or "Acknowledged" (only when user specifies)
+4. **Use in_reply_to** for direct comment replies
