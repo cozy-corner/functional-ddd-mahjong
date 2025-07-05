@@ -293,7 +293,9 @@ module MeldTests =
             let numberStr = parts.[1]
 
             let numberValue = parseNumberValue numberStr
-            let tile = createNumberTile tileType numberValue
+
+            let tile =
+                createNumberTile tileType numberValue
 
             let tiles = [ tile; tile; tile ]
 
