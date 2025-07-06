@@ -78,11 +78,11 @@ module Hand =
         | Ready _ -> true
         | Waiting _ -> false
 
-    // 手牌を4面子1雀頭に分解する
-    // 成功時はSome(面子リスト, 雀頭)、失敗時はNone
-    let tryDecompose hand =
+    // 手牌を全ての可能な4面子1雀頭パターンに分解する
+    // 分解可能な全てのパターンをリストで返す（分解不可の場合は空リスト）
+    let tryDecomposeAll hand =
         match hand with
-        | Waiting _ -> None // 13牌では分解不可
+        | Waiting _ -> [] // 13牌では分解不可
         | Ready tiles ->
             // 内部実装はMeldDecompositionモジュールに委譲
-            MeldDecomposition.tryDecomposeInternal tiles
+            MeldDecomposition.tryDecomposeAllInternal tiles
