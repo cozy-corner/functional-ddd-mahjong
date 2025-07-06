@@ -58,12 +58,14 @@ module internal MeldDecomposition =
                                         |> removeItems first 1
                                         |> removeItems t2 1
                                         |> removeItems t3 1
+
                                     Some(seq, remaining)
                                 | Error _ -> None
                             else
                                 None)
+
                     findSequences tailForT3 (sequencesWithT2 @ acc)
-            
+
             findSequences rest [] |> List.rev
 
     // バックトラッキングで全ての4面子パターンを探す
@@ -87,7 +89,8 @@ module internal MeldDecomposition =
                     | Some(triplet, rest) -> [ (triplet, rest) ]
                     | None -> []
 
-                let sequenceCandidates = findAllSequenceCandidates sorted
+                let sequenceCandidates =
+                    findAllSequenceCandidates sorted
 
                 let candidates =
                     tripletCandidates @ sequenceCandidates
