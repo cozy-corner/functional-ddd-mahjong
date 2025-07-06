@@ -64,30 +64,40 @@ let ``tryDecomposeAll returns empty list for 13-tile waiting hand`` () =
 // 順子4つの和了形
 [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,1p,1p,1p,2s,2s", "2s:111p,123m,456m,789m")>]
 // 刻子と順子の両方の分解が可能なパターン (複数分解)
-[<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,4m,4m,4m,5m,5m", "2m:111m,234m,345m,345m|5m:111m,222m,333m,444m|5m:111m,234m,234m,234m|5m:123m,123m,123m,444m")>]
+[<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,4m,4m,4m,5m,5m",
+             "2m:111m,234m,345m,345m|5m:111m,222m,333m,444m|5m:111m,234m,234m,234m|5m:123m,123m,123m,444m")>]
 // 雀頭候補が複数ある手牌 (複数分解パターン)
-[<InlineData("1m,1m,2m,2m,3m,3m,4m,4m,5m,5m,6m,6m,7m,7m", "1m:234m,234m,567m,567m|4m:123m,123m,567m,567m|7m:123m,123m,456m,456m")>]
+[<InlineData("1m,1m,2m,2m,3m,3m,4m,4m,5m,5m,6m,6m,7m,7m",
+             "1m:234m,234m,567m,567m|4m:123m,123m,567m,567m|7m:123m,123m,456m,456m")>]
 // 同じ牌群での刻子と順子の選択が可能なパターン (複数分解)
 [<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,4p,5p,6p,7s,7s", "7s:111m,222m,333m,456p|7s:123m,123m,123m,456p")>]
 let ``tryDecomposeAll returns correct decomposition patterns`` (tileString: string, expectedPatternsString: string) =
-    let tileStrings = tileString.Split(',') |> Array.toList
-    let hand = createReadyHand (createTiles tileStrings)
+    let tileStrings =
+        tileString.Split(',') |> Array.toList
+
+    let hand =
+        createReadyHand (createTiles tileStrings)
+
     let result = tryDecomposeAll hand
-    
-    let actualPatterns = 
+
+    let actualPatterns =
         result
         |> List.map (fun (melds, pair) ->
-            let pairStr = getPairTiles pair |> List.head |> toShortString
-            let meldStrs = melds |> List.map meldToShortString |> List.sort
+            let pairStr =
+                getPairTiles pair |> List.head |> toShortString
+
+            let meldStrs =
+                melds |> List.map meldToShortString |> List.sort
+
             let meldsStr = String.concat "," meldStrs
             $"{pairStr}:{meldsStr}")
         |> List.sort
-    
-    let expectedPatterns = 
-        expectedPatternsString.Split('|') 
-        |> Array.toList 
+
+    let expectedPatterns =
+        expectedPatternsString.Split('|')
+        |> Array.toList
         |> List.sort
-    
+
     Assert.Equal<string list>(expectedPatterns, actualPatterns)
 
 
