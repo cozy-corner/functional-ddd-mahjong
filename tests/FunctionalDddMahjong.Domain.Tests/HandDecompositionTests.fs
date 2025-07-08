@@ -126,3 +126,73 @@ let ``tryDecomposeAll returns empty for invalid hands`` () =
 
         let result = tryDecomposeAll hand
         Assert.Empty(result))
+
+
+// isWinningHand のテスト
+
+[<Theory>]
+// 基本的な和了形のパターン
+[<InlineData("1m,2m,3m,E,E,E,S,S,S,W,W,W,N,N")>] // 順子1つ + 刻子3つ + 雀頭
+[<InlineData("1m,1m,1m,E,E,E,S,S,S,W,W,W,N,N")>] // 刻子4つ + 雀頭
+[<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,E,E,E,S,S")>] // 順子3つ + 刻子1つ + 雀頭
+[<InlineData("1m,1m,2m,2m,3m,3m,E,E,E,S,S,S,W,W")>] // 一盃口（同じ順子2つ）を含む和了形
+// 清一色（同じ種類の牌のみ）
+[<InlineData("1m,1m,1m,2m,3m,4m,5m,6m,7m,8m,9m,9m,9m,9m")>] // 萬子清一色
+[<InlineData("1p,2p,3p,2p,3p,4p,3p,4p,5p,7p,8p,9p,5p,5p")>] // 筒子清一色
+[<InlineData("1s,1s,2s,2s,3s,3s,4s,5s,6s,7s,8s,9s,9s,9s")>] // 索子清一色
+// 字牌のみの和了形
+[<InlineData("E,E,E,S,S,S,W,W,W,N,N,H,H,H")>] // 字牌のみ（字一色）
+// 複雑なパターン（複数の分解が可能）
+[<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,4m,4m,4m,5m,5m")>] // 同じ牌群で刻子/順子の選択可能
+[<InlineData("1m,1m,2m,2m,3m,3m,4m,4m,5m,5m,6m,6m,7m,7m")>] // 雀頭候補が複数ある
+let ``isWinningHand returns true for valid winning hands`` (tileString: string) =
+    let tileStrings =
+        tileString.Split(',') |> Array.toList
+
+    let hand =
+        createReadyHand (createTiles tileStrings)
+
+    Assert.True(isWinningHand hand)
+
+[<Theory>]
+// ノーテン手（和了にならない手牌）のパターン
+[<InlineData("1m,3m,5m,7m,9m,1p,3p,5p,7p,9p,E,S,W,N")>] // 全て孤立牌
+[<InlineData("1m,1m,3m,3m,5m,5m,7m,7m,9m,9m,E,S,W,N")>] // 対子のみで面子なし
+[<InlineData("1m,2m,4m,5m,E,E,E,S,S,S,W,W,N,H")>] // 面子になりかけ（1枚足りない）
+[<InlineData("1m,2m,3m,E,E,E,S,S,S,W,N,H,G,R")>] // 3面子しか作れない（雀頭候補なし）
+[<InlineData("1m,1m,1m,1m,E,E,E,E,S,S,S,S,W,W")>] // 同じ牌が4枚（槓子）を含む
+[<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,E,S,W,N,H")>] // 雀頭がない（全て異なる字牌）
+// 惜しいノーテン（あと1枚で和了）
+[<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,E,E,E,S,W")>] // W→Sなら和了（雀頭不足）
+[<InlineData("1m,1m,1m,2m,3m,5m,E,E,E,S,S,S,W,W")>] // 5m→4mなら和了（順子不完全）
+let ``isWinningHand returns false for non-winning hands`` (tileString: string) =
+    let tileStrings =
+        tileString.Split(',') |> Array.toList
+
+    let hand =
+        createReadyHand (createTiles tileStrings)
+
+    Assert.False(isWinningHand hand)
+
+[<Fact>]
+let ``isWinningHand returns false for 13-tile waiting hand`` () =
+    // 13牌の手牌（どんな組み合わせでも和了にならない）
+    let tiles =
+        createTiles
+            [ "1m"
+              "2m"
+              "3m"
+              "E"
+              "E"
+              "E"
+              "S"
+              "S"
+              "S"
+              "W"
+              "W"
+              "W"
+              "N" ]
+
+    match tryCreateFromDeal tiles with
+    | Ok waitingHand -> Assert.False(isWinningHand waitingHand)
+    | Error e -> failwith $"Test setup failed: {e}"

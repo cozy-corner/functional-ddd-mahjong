@@ -86,3 +86,9 @@ module Hand =
         | Ready tiles ->
             // 内部実装はMeldDecompositionモジュールに委譲
             MeldDecomposition.tryDecomposeAllInternal tiles
+
+    // 手牌が和了形（4面子1雀頭に分解可能）かを判定する
+    let isWinningHand hand =
+        match tryDecomposeAll hand with
+        | [] -> false // 分解パターンが存在しない = ノーテン
+        | _ -> true // 1つ以上の分解パターンが存在 = 和了
