@@ -87,8 +87,20 @@ module Hand =
             // 内部実装はMeldDecompositionモジュールに委譲
             MeldDecomposition.tryDecomposeAllInternal tiles
 
+    // 和了形を表現する型（4面子1雀頭の分解パターンを保持）
+    type WinningHand = private WinningHand of (Meld.Meld list * Pair.Pair) list
+
+    // 和了形の作成（和了手のみ作成可能）
+    let tryCreateWinningHand hand =
+        match tryDecomposeAll hand with
+        | [] -> None // 分解パターンが存在しない = ノーテン
+        | decompositions -> Some(WinningHand decompositions) // 和了形として作成
+
+    // 和了形から分解パターンを取得
+    let getDecompositions (WinningHand decompositions) = decompositions
+
     // 手牌が和了形（4面子1雀頭に分解可能）かを判定する
     let isWinningHand hand =
-        match tryDecomposeAll hand with
-        | [] -> false // 分解パターンが存在しない = ノーテン
-        | _ -> true // 1つ以上の分解パターンが存在 = 和了
+        match tryCreateWinningHand hand with
+        | None -> false // 分解パターンが存在しない = ノーテン
+        | Some _ -> true // 1つ以上の分解パターンが存在 = 和了
