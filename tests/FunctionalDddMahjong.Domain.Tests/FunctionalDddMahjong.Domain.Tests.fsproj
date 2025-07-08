@@ -15,6 +15,7 @@
     <Compile Include="MeldTests.fs" />
     <Compile Include="PairTests.fs" />
     <Compile Include="HandDecompositionTests.fs" />
+    <Compile Include="YakuTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
