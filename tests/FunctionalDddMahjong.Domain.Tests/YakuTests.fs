@@ -37,14 +37,25 @@ module YakuTests =
 
     [<Fact>]
     let ``tryCreateWinningHand should return None for waiting hand`` () =
-        let tileStrings = [
-            "2m"; "3m"; "4m"; "5m"; "6m"; "7m"; "8m"
-            "2p"; "3p"; "4p"; "5p"; "6p"; "7p"
-        ]
+        let tileStrings =
+            [ "2m"
+              "3m"
+              "4m"
+              "5m"
+              "6m"
+              "7m"
+              "8m"
+              "2p"
+              "3p"
+              "4p"
+              "5p"
+              "6p"
+              "7p" ]
+
         let tiles = createTiles tileStrings
         let hand = Waiting tiles
         let result = tryCreateWinningHand hand
-        
+
         match result with
         | None -> Assert.True(true)
         | Some _ -> Assert.True(false, "Should not create WinningHand from waiting hand")
@@ -52,12 +63,16 @@ module YakuTests =
     [<Theory>]
     [<InlineData("2m,3m,4m,5m,6m,7m,2p,3p,4p,5p,6p,7p,8s,8s")>] // タンヤオ成立手
     let ``checkTanyao should accept valid tanyao hand`` (tileString: string) =
-        let tileStrings = tileString.Split(',') |> Array.toList
-        let hand = createReadyHand (createTiles tileStrings)
-        
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
         match tryCreateWinningHand hand with
         | Some winningHand ->
             let result = checkTanyao winningHand
+
             match result with
             | Some Tanyao -> Assert.True(true)
             | None -> Assert.True(false, "Should accept valid tanyao hand")
@@ -68,12 +83,16 @@ module YakuTests =
     [<InlineData("2m,3m,4m,5m,6m,7m,2p,3p,4p,5p,6p,7p,E,E")>] // E（字牌）を含む
     [<InlineData("2m,3m,4m,7m,8m,9m,2p,3p,4p,5p,6p,7p,8s,8s")>] // 9m（么九牌）を含む
     let ``checkTanyao should reject hand with terminal or honor tiles`` (tileString: string) =
-        let tileStrings = tileString.Split(',') |> Array.toList
-        let hand = createReadyHand (createTiles tileStrings)
-        
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
         match tryCreateWinningHand hand with
         | Some winningHand ->
             let result = checkTanyao winningHand
+
             match result with
             | None -> Assert.True(true)
             | Some _ -> Assert.True(false, "Should reject hand with terminal or honor tiles")
@@ -82,10 +101,14 @@ module YakuTests =
     [<Theory>]
     [<InlineData("2m,3m,4m,5m,6m,7m,2p,3p,4p,5p,6p,7p,8p,9p")>] // 和了形にならない手牌
     let ``tryCreateWinningHand should return None for non-winning hand`` (tileString: string) =
-        let tileStrings = tileString.Split(',') |> Array.toList
-        let hand = createReadyHand (createTiles tileStrings)
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
         let result = tryCreateWinningHand hand
-        
+
         match result with
         | None -> Assert.True(true)
         | Some _ -> Assert.True(false, "Should not create WinningHand from non-winning hand")
