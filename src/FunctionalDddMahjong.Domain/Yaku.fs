@@ -60,15 +60,16 @@ module Yaku =
         let decompositions =
             Hand.getDecompositions winningHand
 
-        let (melds, pair) = List.head decompositions // 任意の分解パターン（牌は同じ）
+        match decompositions with
+        | (melds, pair) :: _ -> // 任意の分解パターン（牌は同じ）
+            let allTiles =
+                getAllTilesFromDecomposition (melds, pair)
 
-        let allTiles =
-            getAllTilesFromDecomposition (melds, pair)
-
-        if allTiles |> List.forall isSimple then
-            Some Tanyao
-        else
-            None
+            if allTiles |> List.forall isSimple then
+                Some Tanyao
+            else
+                None
+        | [] -> None // This should never happen for a valid WinningHand
 
     // 役の名前を取得
     let getName =
