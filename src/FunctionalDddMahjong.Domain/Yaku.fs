@@ -8,7 +8,10 @@ module Yaku =
     open Hand
 
     // 役の型定義
-    type Yaku = | Tanyao // 断么九（中張牌のみ）
+    type Yaku =
+        | Tanyao // 断么九（中張牌のみ）
+        | Pinfu // 平和（順子4つ+数牌の雀頭）- 簡略版
+        | Toitoi // 対々和（刻子4つ+雀頭）
 
     // 役判定のエラー型（真のエラーのみ）
     type YakuError = InvalidHandState of string
@@ -71,17 +74,78 @@ module Yaku =
                 None
         | [] -> None // This should never happen for a valid WinningHand
 
+    // ピンフ（平和）の判定 - 簡略版
+    // 全ての面子が順子で、雀頭が数牌である必要がある
+    let checkPinfu (winningHand: Hand.WinningHand) : Option<Yaku> =
+        let decompositions =
+            Hand.getDecompositions winningHand
+
+        match decompositions with
+        | (melds, pair) :: _ ->
+            // 全ての面子が順子かチェック
+            let allSequences =
+                melds
+                |> List.forall (fun meld ->
+                    match Meld.getMeldValue meld with
+                    | Meld.Sequence _ -> true
+                    | Meld.Triplet _ -> false)
+
+            // 雀頭が数牌かチェック
+            let pairTiles = Pair.getPairTiles pair
+
+            let pairIsNumeric =
+                match pairTiles with
+                | [ tile1; _ ] ->
+                    match Tile.getValue tile1 with
+                    | TileType.Honor _ -> false
+                    | _ -> true
+                | _ -> false
+
+            if allSequences && pairIsNumeric then
+                Some Pinfu
+            else
+                None
+        | [] -> None
+
+    // トイトイ（対々和）の判定
+    // 全ての面子が刻子である必要がある
+    let checkToitoi (winningHand: Hand.WinningHand) : Option<Yaku> =
+        let decompositions =
+            Hand.getDecompositions winningHand
+
+        match decompositions with
+        | (melds, _) :: _ ->
+            // 全ての面子が刻子かチェック
+            let allTriplets =
+                melds
+                |> List.forall (fun meld ->
+                    match Meld.getMeldValue meld with
+                    | Meld.Sequence _ -> false
+                    | Meld.Triplet _ -> true)
+
+            if allTriplets then
+                Some Toitoi
+            else
+                None
+        | [] -> None
+
     // 役の名前を取得
     let getName =
         function
         | Tanyao -> "断么九"
+        | Pinfu -> "平和"
+        | Toitoi -> "対々和"
 
     // 役の翻数を取得
     let getHan =
         function
         | Tanyao -> 1
+        | Pinfu -> 1
+        | Toitoi -> 2
 
     // 役の英語名を取得
     let getEnglishName =
         function
         | Tanyao -> "All Simples"
+        | Pinfu -> "All Sequences"
+        | Toitoi -> "All Triplets"
