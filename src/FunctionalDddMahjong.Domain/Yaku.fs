@@ -12,6 +12,8 @@ module Yaku =
         | Tanyao // 断么九（中張牌のみ）
         | Pinfu // 平和（順子4つ+数牌の雀頭）- 簡略版
         | Toitoi // 対々和（刻子4つ+雀頭）
+        | Honitsu // 混一色（一色+字牌）
+        | Chinitsu // 清一色（一色のみ）
 
     // 役判定のエラー型（真のエラーのみ）
     type YakuError = InvalidHandState of string
@@ -129,12 +131,91 @@ module Yaku =
                 None
         | [] -> None
 
+    // ヘルパー関数: 手牌に含まれる数牌スートの種類数を数える
+    let private countNumericSuits tiles =
+        let hasCharacters =
+            tiles
+            |> List.exists (fun t ->
+                match Tile.getValue t with
+                | TileType.Character _ -> true
+                | _ -> false)
+
+        let hasCircles =
+            tiles
+            |> List.exists (fun t ->
+                match Tile.getValue t with
+                | TileType.Circle _ -> true
+                | _ -> false)
+
+        let hasBamboos =
+            tiles
+            |> List.exists (fun t ->
+                match Tile.getValue t with
+                | TileType.Bamboo _ -> true
+                | _ -> false)
+
+        [ hasCharacters
+          hasCircles
+          hasBamboos ]
+        |> List.filter id
+        |> List.length
+
+    // ヘルパー関数: 手牌に字牌が含まれているか
+    let private containsHonors tiles =
+        tiles
+        |> List.exists (fun t ->
+            match Tile.getValue t with
+            | TileType.Honor _ -> true
+            | _ -> false)
+
+    // ホンイツ（混一色）の判定
+    // 一つの数牌スート + 字牌のみで構成される必要がある
+    let checkHonitsu (winningHand: Hand.WinningHand) : Option<Yaku> =
+        let decompositions =
+            Hand.getDecompositions winningHand
+
+        match decompositions with
+        | (melds, pair) :: _ ->
+            let allTiles =
+                getAllTilesFromDecomposition (melds, pair)
+
+            if
+                countNumericSuits allTiles = 1
+                && containsHonors allTiles
+            then
+                Some Honitsu
+            else
+                None
+        | [] -> None
+
+    // チンイツ（清一色）の判定
+    // 一つの数牌スートのみで構成される必要がある
+    let checkChinitsu (winningHand: Hand.WinningHand) : Option<Yaku> =
+        let decompositions =
+            Hand.getDecompositions winningHand
+
+        match decompositions with
+        | (melds, pair) :: _ ->
+            let allTiles =
+                getAllTilesFromDecomposition (melds, pair)
+
+            if
+                countNumericSuits allTiles = 1
+                && not (containsHonors allTiles)
+            then
+                Some Chinitsu
+            else
+                None
+        | [] -> None
+
     // 役の名前を取得
     let getName =
         function
         | Tanyao -> "断么九"
         | Pinfu -> "平和"
         | Toitoi -> "対々和"
+        | Honitsu -> "混一色"
+        | Chinitsu -> "清一色"
 
     // 役の翻数を取得
     let getHan =
@@ -142,6 +223,8 @@ module Yaku =
         | Tanyao -> 1
         | Pinfu -> 1
         | Toitoi -> 2
+        | Honitsu -> 3
+        | Chinitsu -> 6
 
     // 役の英語名を取得
     let getEnglishName =
@@ -149,3 +232,5 @@ module Yaku =
         | Tanyao -> "All Simples"
         | Pinfu -> "All Sequences"
         | Toitoi -> "All Triplets"
+        | Honitsu -> "Half Flush"
+        | Chinitsu -> "Full Flush"
