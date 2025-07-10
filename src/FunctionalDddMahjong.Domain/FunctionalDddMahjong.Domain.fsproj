@@ -13,6 +13,7 @@
     <Compile Include="MeldDecomposition.fs" />
     <Compile Include="Hand.fs" />
     <Compile Include="Yaku.fs" />
+    <Compile Include="YakuAnalyzer.fs" />
   </ItemGroup>
 
 </Project>
