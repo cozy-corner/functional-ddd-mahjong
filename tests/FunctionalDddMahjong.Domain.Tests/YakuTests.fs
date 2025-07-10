@@ -46,6 +46,16 @@ module YakuTests =
         Assert.Equal(2, getHan Toitoi)
         Assert.Equal("All Triplets", getEnglishName Toitoi)
 
+        // Honitsu
+        Assert.Equal("混一色", getName Honitsu)
+        Assert.Equal(3, getHan Honitsu)
+        Assert.Equal("Half Flush", getEnglishName Honitsu)
+
+        // Chinitsu
+        Assert.Equal("清一色", getName Chinitsu)
+        Assert.Equal(6, getHan Chinitsu)
+        Assert.Equal("Full Flush", getEnglishName Chinitsu)
+
     [<Fact>]
     let ``tryCreateWinningHand should return None for waiting hand`` () =
         let tileStrings =
@@ -204,4 +214,88 @@ module YakuTests =
             match result with
             | None -> Assert.True(true)
             | Some _ -> Assert.True(false, "Should reject toitoi hand with sequences")
+        | None -> Assert.True(false, "Should be a winning hand")
+
+    // ホンイツのテストケース
+    [<Theory>]
+    [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,E,E,E,S,S")>] // 萬子 + 字牌
+    [<InlineData("2p,2p,2p,5p,5p,5p,8p,8p,8p,W,W,W,N,N")>] // 筒子の刻子 + 字牌
+    [<InlineData("1s,2s,3s,4s,5s,6s,7s,8s,9s,1s,2s,3s,E,E")>] // 索子の順子 + 字牌
+    [<InlineData("1m,1m,1m,2m,3m,4m,5m,6m,7m,E,E,E,N,N")>] // 萬子の混合 + 複数種の字牌
+    let ``checkHonitsu should accept valid honitsu hand`` (tileString: string) =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
+        match tryCreateWinningHand hand with
+        | Some winningHand ->
+            let result = checkHonitsu winningHand
+
+            match result with
+            | Some Honitsu -> Assert.True(true)
+            | None -> Assert.True(false, "Should accept valid honitsu hand")
+        | None -> Assert.True(false, "Should be a winning hand")
+
+    [<Theory>]
+    [<InlineData("1m,2m,3m,4p,5p,6p,7s,8s,9s,E,E,E,S,S")>] // 複数の数牌スート
+    [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,1m,2m,3m,4m,4m")>] // 数牌のみ（字牌なし）
+    [<InlineData("E,E,E,S,S,S,W,W,W,N,N,N,H,H")>] // 字牌のみ
+    let ``checkHonitsu should reject invalid honitsu hand`` (tileString: string) =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
+        match tryCreateWinningHand hand with
+        | Some winningHand ->
+            let result = checkHonitsu winningHand
+
+            match result with
+            | None -> Assert.True(true)
+            | Some _ -> Assert.True(false, "Should reject invalid honitsu hand")
+        | None -> Assert.True(false, "Should be a winning hand")
+
+    // チンイツのテストケース
+    [<Theory>]
+    [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,1m,2m,3m,5m,5m")>] // 萬子のみ
+    [<InlineData("1p,1p,1p,2p,3p,4p,5p,6p,7p,8p,9p,9p,9p,9p")>] // 筒子のみ（刻子含む）
+    [<InlineData("2s,3s,4s,3s,4s,5s,4s,5s,6s,5s,6s,7s,8s,8s")>] // 索子のみ（重複順子）
+    [<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,4m,4m,4m,5m,5m")>] // 萬子のみ（全て刻子）
+    let ``checkChinitsu should accept valid chinitsu hand`` (tileString: string) =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
+        match tryCreateWinningHand hand with
+        | Some winningHand ->
+            let result = checkChinitsu winningHand
+
+            match result with
+            | Some Chinitsu -> Assert.True(true)
+            | None -> Assert.True(false, "Should accept valid chinitsu hand")
+        | None -> Assert.True(false, "Should be a winning hand")
+
+    [<Theory>]
+    [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,E,E,E,S,S")>] // 字牌を含む（ホンイツ）
+    [<InlineData("1m,2m,3m,4p,5p,6p,7p,8p,9p,1s,2s,3s,5m,5m")>] // 複数の数牌スート
+    [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,1p,1p,1p,2s,2s")>] // 複数の数牌スート
+    let ``checkChinitsu should reject invalid chinitsu hand`` (tileString: string) =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
+        match tryCreateWinningHand hand with
+        | Some winningHand ->
+            let result = checkChinitsu winningHand
+
+            match result with
+            | None -> Assert.True(true)
+            | Some _ -> Assert.True(false, "Should reject invalid chinitsu hand")
         | None -> Assert.True(false, "Should be a winning hand")
