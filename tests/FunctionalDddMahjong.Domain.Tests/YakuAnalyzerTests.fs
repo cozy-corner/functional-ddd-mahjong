@@ -61,6 +61,8 @@ module YakuAnalyzerTests =
     [<InlineData("2m,3m,4m,5m,6m,7m,2p,3p,4p,3s,3s,3s,5s,5s", "Tanyao", 1)>] // タンヤオのみ
     [<InlineData("1m,2m,3m,4m,5m,6m,1p,2p,3p,1s,2s,3s,1m,1m", "Pinfu", 1)>] // ピンフのみ
     [<InlineData("1m,1m,1m,2p,2p,2p,3s,3s,3s,4m,4m,4m,E,E", "Toitoi", 2)>] // トイトイのみ
+    // TODO: Phase 3.1 PR5で対応 - 相互排他性の実装
+    // [<InlineData("2m,2m,2m,3p,3p,3p,4s,4s,4s,5m,5m,5m,6p,6p", "Toitoi", 2)>] // トイトイ+タンヤオの相互排他性テスト
     let ``analyzeYaku should detect single yaku`` (tileString: string, expectedYaku: string, expectedHan: int) =
         let tileStrings =
             tileString.Split(',') |> Array.toList
