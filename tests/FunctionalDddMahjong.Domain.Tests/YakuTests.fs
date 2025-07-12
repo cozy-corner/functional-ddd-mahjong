@@ -56,6 +56,11 @@ module YakuTests =
         Assert.Equal(6, getHan Chinitsu)
         Assert.Equal("Full Flush", getEnglishName Chinitsu)
 
+        // Iipeikou
+        Assert.Equal("一盃口", getName Iipeikou)
+        Assert.Equal(1, getHan Iipeikou)
+        Assert.Equal("Pure Double Sequence", getEnglishName Iipeikou)
+
     [<Fact>]
     let ``tryCreateWinningHand should return None for waiting hand`` () =
         let tileStrings =
@@ -303,3 +308,49 @@ module YakuTests =
             | None -> Assert.True(true)
             | Some _ -> Assert.True(false, "Should reject invalid chinitsu hand")
         | None -> Assert.True(false, "Should be a winning hand")
+
+    [<Theory>]
+    [<InlineData("1m,2m,3m,1m,2m,3m,4p,5p,6p,7s,8s,9s,N,N")>] // 萬子の123が2組
+    [<InlineData("2p,3p,4p,2p,3p,4p,5m,6m,7m,8s,8s,8s,E,E")>] // 筒子の234が2組
+    [<InlineData("5s,6s,7s,5s,6s,7s,1m,2m,3m,4m,5m,6m,W,W")>] // 索子の567が2組
+    [<InlineData("1m,2m,3m,1m,2m,3m,4m,5m,6m,7m,8m,9m,5p,5p")>] // 萬子の123が2組 + 他の順子
+    [<InlineData("2p,3p,4p,5p,6p,7p,2p,3p,4p,5p,6p,7p,9s,9s")>] // 筒子の234と567がそれぞれ2組（二盃口）
+    [<InlineData("1m,2m,3m,1m,2m,3m,1m,2m,3m,4p,5p,6p,N,N")>] // 同じ順子が3組も一盃口成立
+    [<InlineData("2m,2m,3m,3m,4m,4m,5p,6p,7p,8s,8s,E,E,E")>] // 223344m -> 234m,234m の分解で一盃口
+    [<InlineData("1m,1m,1m,2m,3m,4m,2m,3m,4m,5s,6s,7s,8p,8p")>] // 123m,234m が各2組で一盃口
+    let ``checkIipeikou should accept valid iipeikou hand`` (tileString: string) =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
+        match tryCreateWinningHand hand with
+        | Some winningHand ->
+            let result = checkIipeikou winningHand
+
+            match result with
+            | Some Iipeikou -> Assert.True(true)
+            | _ -> Assert.True(false, "Should detect iipeikou")
+        | None -> Assert.True(false, "Should be a winning hand")
+
+    [<Theory>]
+    [<InlineData("1m,2m,3m,4p,5p,6p,7s,8s,9s,1p,2p,3p,N,N")>] // 全て異なる順子
+    [<InlineData("1m,1m,1m,2p,2p,2p,3s,3s,3s,4p,4p,4p,5m,5m")>] // 全て刻子（トイトイ）
+    [<InlineData("1m,2m,3m,4m,5m,6m,7m,8m,9m,1p,2p,3p,N,N")>] // 連続する順子だが同じではない
+    [<InlineData("1m,2m,3m,2m,3m,4m,5p,6p,7p,8s,8s,8s,N,N")>] // 重なる順子だが同じではない
+    let ``checkIipeikou should reject invalid iipeikou hand`` (tileString: string) =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand =
+            createReadyHand (createTiles tileStrings)
+
+        match tryCreateWinningHand hand with
+        | Some winningHand ->
+            let result = checkIipeikou winningHand
+
+            match result with
+            | None -> Assert.True(true)
+            | Some _ -> Assert.True(false, "Should reject invalid iipeikou hand")
+        | None -> Assert.True(true) // 和了していない手牌はそもそも一盃口にならない
