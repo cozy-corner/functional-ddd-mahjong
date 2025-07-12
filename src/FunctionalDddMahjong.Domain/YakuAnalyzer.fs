@@ -27,7 +27,8 @@ module YakuAnalyzer =
               Yaku.checkPinfu
               Yaku.checkToitoi
               Yaku.checkHonitsu
-              Yaku.checkChinitsu ]
+              Yaku.checkChinitsu
+              Yaku.checkIipeikou ]
 
         // Option型の結果をフィルタリングして成立した役のみ取得
         let detectedYaku =
