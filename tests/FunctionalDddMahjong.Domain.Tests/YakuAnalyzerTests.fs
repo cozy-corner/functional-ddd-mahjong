@@ -20,6 +20,7 @@ module YakuAnalyzerTests =
         | "Toitoi" -> Yaku.Toitoi
         | "Honitsu" -> Yaku.Honitsu
         | "Chinitsu" -> Yaku.Chinitsu
+        | "Iipeikou" -> Yaku.Iipeikou
         | _ -> failwith $"Unknown yaku: {yakuName}"
 
     // テストヘルパー関数
@@ -83,7 +84,7 @@ module YakuAnalyzerTests =
     [<Theory>]
     [<InlineData("2m,3m,4m,5m,6m,7m,2p,3p,4p,2s,3s,4s,2s,2s", "Tanyao,Pinfu", 2)>] // タンヤオ+ピンフ
     [<InlineData("1m,1m,1m,2m,2m,3m,3m,3m,E,E,E,S,S,S", "Honitsu,Toitoi", 5)>] // ホンイツ+トイトイ
-    [<InlineData("1m,1m,1m,2m,2m,3m,3m,3m,4m,4m,5m,5m,6m,6m", "Chinitsu", 6)>] // チンイツ
+    [<InlineData("1m,1m,1m,2m,2m,3m,3m,3m,4m,4m,5m,5m,6m,6m", "Chinitsu,Iipeikou", 7)>] // チンイツ+一盃口
     let ``analyzeYaku should detect multiple yaku`` (tileString: string, expectedYakuString: string, expectedHan: int) =
         let tileStrings =
             tileString.Split(',') |> Array.toList
