@@ -139,6 +139,8 @@ module YakuTests =
     [<InlineData("1m,2m,3m,4p,5p,6p,7s,8s,9s,2m,3m,4m,5p,5p")>] // 順子4つ + 数牌の雀頭
     [<InlineData("2m,3m,4m,3p,4p,5p,6p,7p,8p,4s,5s,6s,7s,7s")>] // 順子4つ + 数牌の雀頭（中張牌）
     [<InlineData("1p,2p,3p,4p,5p,6p,7p,8p,9p,1s,2s,3s,2m,2m")>] // 清一色の順子 + 数牌の雀頭
+    [<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,4p,5p,6p,7s,7s")>] // 複数分解パターン: 123,123,123,456でピンフ
+    [<InlineData("2m,2m,2m,3m,3m,3m,4m,4m,4m,5p,6p,7p,8s,8s")>] // 複数分解パターン: 234,234,234,567でピンフ
     let ``checkPinfu should accept valid pinfu hand`` (tileString: string) =
         let tileStrings =
             tileString.Split(',') |> Array.toList
@@ -180,6 +182,8 @@ module YakuTests =
     [<InlineData("2m,2m,2m,5p,5p,5p,8s,8s,8s,3m,3m,3m,7p,7p")>] // 刻子4つ + 雀頭
     [<InlineData("1m,1m,1m,9p,9p,9p,E,E,E,S,S,S,W,W")>] // 么九牌の刻子も含む
     [<InlineData("4s,4s,4s,5s,5s,5s,6s,6s,6s,7s,7s,7s,8s,8s")>] // 清一色の刻子
+    [<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,E,E,E,S,S")>] // 複数分解パターン: 111,222,333でトイトイ
+    [<InlineData("2m,2m,2m,3m,3m,3m,4m,4m,4m,E,E,E,S,S")>] // 複数分解パターン: 222,333,444でトイトイ
     let ``checkToitoi should accept valid toitoi hand`` (tileString: string) =
         let tileStrings =
             tileString.Split(',') |> Array.toList
