@@ -124,6 +124,28 @@ module YakuAnalyzerTests =
             Assert.True(YakuAnalyzer.hasNoYaku analysisResult)
         | Error msg -> Assert.True(false, $"Expected success but got error: {msg}")
 
+    [<Theory>]
+    [<InlineData("1m,1m,1m,2m,2m,2m,3m,3m,3m,R,R,R,G,G", "Honitsu,Toitoi", 5)>] // 111222333mRRRGG - ホンイツ+トイトイ（一盃口は相互排他で除外）
+    [<InlineData("2m,2m,2m,3m,3m,3m,4m,4m,4m,5p,5p,5p,6s,6s", "Tanyao,Toitoi", 3)>] // タンヤオ+トイトイ（一盃口は相互排他で除外）
+    let ``analyzeYaku should apply high-scoring method for mutually exclusive yaku``
+        (tileString: string, expectedYaku: string, expectedHan: int)
+        =
+        let tileStrings =
+            tileString.Split(',') |> Array.toList
+
+        let hand = createTestHand tileStrings
+        let result = YakuAnalyzer.analyzeYaku hand
+
+        match result with
+        | Ok analysisResult ->
+            let expectedYakuList =
+                expectedYaku.Split(',')
+                |> Array.map yakuFromString
+                |> Array.toList
+
+            Assert.Equal<Set<Yaku.Yaku>>(Set.ofList expectedYakuList, Set.ofList analysisResult.Yaku)
+            Assert.Equal(expectedHan, analysisResult.TotalHan)
+        | Error msg -> Assert.True(false, $"Expected success but got error: {msg}")
 
     [<Fact>]
     let ``hasNoYaku should detect empty yaku list`` () =
