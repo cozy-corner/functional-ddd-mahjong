@@ -82,8 +82,8 @@ module Yaku =
         let decompositions =
             Hand.getDecompositions winningHand
 
-        match decompositions with
-        | (melds, pair) :: _ ->
+        // いずれかの分解パターンでピンフが成立するかチェック
+        let isPinfu (melds, pair) =
             // 全ての面子が順子かチェック
             let allSequences =
                 melds
@@ -103,11 +103,12 @@ module Yaku =
                     | _ -> true
                 | _ -> false
 
-            if allSequences && pairIsNumeric then
-                Some Pinfu
-            else
-                None
-        | [] -> None
+            allSequences && pairIsNumeric
+
+        if decompositions |> List.exists isPinfu then
+            Some Pinfu
+        else
+            None
 
     // トイトイ（対々和）の判定
     // 全ての面子が刻子である必要がある
@@ -115,21 +116,19 @@ module Yaku =
         let decompositions =
             Hand.getDecompositions winningHand
 
-        match decompositions with
-        | (melds, _) :: _ ->
+        // いずれかの分解パターンでトイトイが成立するかチェック
+        let isToitoi (melds, _) =
             // 全ての面子が刻子かチェック
-            let allTriplets =
-                melds
-                |> List.forall (fun meld ->
-                    match Meld.getMeldValue meld with
-                    | Meld.Sequence _ -> false
-                    | Meld.Triplet _ -> true)
+            melds
+            |> List.forall (fun meld ->
+                match Meld.getMeldValue meld with
+                | Meld.Sequence _ -> false
+                | Meld.Triplet _ -> true)
 
-            if allTriplets then
-                Some Toitoi
-            else
-                None
-        | [] -> None
+        if decompositions |> List.exists isToitoi then
+            Some Toitoi
+        else
+            None
 
     // ヘルパー関数: 手牌に含まれる数牌スートの種類数を数える
     let private countNumericSuits tiles =
