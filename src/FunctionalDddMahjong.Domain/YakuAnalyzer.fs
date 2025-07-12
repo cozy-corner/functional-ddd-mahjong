@@ -21,8 +21,6 @@ module YakuAnalyzer =
 
     // 相互排他関係を解決して最終的な役リストを取得
     let private resolveExclusivity (allDetectedYaku: Yaku.Yaku list) : Yaku.Yaku list =
-        let yakuSet = Set.ofList allDetectedYaku
-
         // 各相互排他グループで競合する役を見つけて、最高翻数の役を選択
         let resolvedYaku =
             mutuallyExclusivePairs
