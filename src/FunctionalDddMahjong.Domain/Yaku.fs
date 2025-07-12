@@ -14,6 +14,7 @@ module Yaku =
         | Toitoi // 対々和（刻子4つ+雀頭）
         | Honitsu // 混一色（一色+字牌）
         | Chinitsu // 清一色（一色のみ）
+        | Iipeikou // 一盃口（同じ順子2つ）
 
     // 役判定のエラー型（真のエラーのみ）
     type YakuError = InvalidHandState of string
@@ -207,6 +208,40 @@ module Yaku =
                 None
         | [] -> None
 
+    // 一盃口（イーペーコー）の判定
+    // 同じ順子が2組存在する必要がある
+    let checkIipeikou (winningHand: Hand.WinningHand) : Option<Yaku> =
+        let decompositions =
+            Hand.getDecompositions winningHand
+
+        // 順子を正規化して比較可能にする（最小牌でソート）
+        let normalizeSequence (t1, t2, t3) =
+            let tiles = [ t1; t2; t3 ] |> List.sort
+
+            match tiles with
+            | [ a; b; c ] -> (a, b, c)
+            | _ -> failwith "Invalid sequence"
+
+        // いずれかの分解パターンで一盃口が成立するかチェック
+        let hasIipeikou (melds, _) =
+            // 順子のみを抽出
+            let sequences =
+                melds
+                |> List.choose (fun meld ->
+                    match Meld.getMeldValue meld with
+                    | Meld.Sequence(t1, t2, t3) -> Some(normalizeSequence (t1, t2, t3))
+                    | Meld.Triplet _ -> None)
+
+            // 同じ順子が2組以上あるかチェック
+            sequences
+            |> List.groupBy id
+            |> List.exists (fun (_, group) -> List.length group >= 2)
+
+        if decompositions |> List.exists hasIipeikou then
+            Some Iipeikou
+        else
+            None
+
     // 役の名前を取得
     let getName =
         function
@@ -215,6 +250,7 @@ module Yaku =
         | Toitoi -> "対々和"
         | Honitsu -> "混一色"
         | Chinitsu -> "清一色"
+        | Iipeikou -> "一盃口"
 
     // 役の翻数を取得
     let getHan =
@@ -224,6 +260,7 @@ module Yaku =
         | Toitoi -> 2
         | Honitsu -> 3
         | Chinitsu -> 6
+        | Iipeikou -> 1
 
     // 役の英語名を取得
     let getEnglishName =
@@ -233,3 +270,4 @@ module Yaku =
         | Toitoi -> "All Triplets"
         | Honitsu -> "Half Flush"
         | Chinitsu -> "Full Flush"
+        | Iipeikou -> "Pure Double Sequence"
