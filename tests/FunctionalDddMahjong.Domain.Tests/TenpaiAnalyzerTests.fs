@@ -6,10 +6,10 @@ open FunctionalDddMahjong.Domain.Tile
 open FunctionalDddMahjong.Domain.TenpaiAnalyzer
 
 // テスト用ヘルパー関数
-let private parseTiles (tilesStr: string) = 
+let private parseTiles (tilesStr: string) =
     tilesStr.Split(',')
     |> Array.toList
-    |> List.map (fun s -> 
+    |> List.map (fun s ->
         match Tile.tryParseFromString s with
         | Ok tile -> tile
         | Error err -> failwith (sprintf "Failed to parse tile '%s': %A" s err))
@@ -43,41 +43,41 @@ let ``isTenpai correctly identifies tenpai patterns`` (tilesStr: string, expecte
 let ``getWaitingTiles returns correct tiles`` (tilesStr: string, expectedStr: string) =
     let tiles = parseTiles tilesStr
     let waitingTiles = getWaitingTiles tiles
-    
-    let expectedTiles = 
+
+    let expectedTiles =
         if expectedStr = "" then
             []
         else
             expectedStr.Split(',')
             |> Array.toList
-            |> List.map (fun s -> 
+            |> List.map (fun s ->
                 match Tile.tryParseFromString s with
                 | Ok tile -> tile
                 | Error err -> failwith (sprintf "Failed to parse tile '%s': %A" s err))
-    
+
     Assert.Equal<Tile list>(expectedTiles, waitingTiles)
 
 // 複合パターンの待ち牌テスト
 [<Theory>]
 [<InlineData("E,E,E,S,S,S,W,W,W,1m,1m,1m,2m", "2m,3m")>] // 1112形: 刻子+単騎 or 雀頭+辺張
-[<InlineData("E,E,E,S,S,S,W,W,W,1m,1m,1m,3m", "2m,3m")>] // 1113形: 刻子+単騎 or 雀頭+嵌張  
+[<InlineData("E,E,E,S,S,S,W,W,W,1m,1m,1m,3m", "2m,3m")>] // 1113形: 刻子+単騎 or 雀頭+嵌張
 [<InlineData("E,E,E,S,S,S,1m,1m,1m,2m,3m,4m,5m", "2m,3m,5m,6m")>] // 1112345形: 2,5,3,6待ち
 [<InlineData("1m,1m,1m,2m,3m,4m,5m,6m,7m,8m,9m,9m,9m", "1m,2m,3m,4m,5m,6m,7m,8m,9m")>] // 純正九蓮宝燈: 全待ち
 let ``getWaitingTiles handles complex decomposition patterns`` (tilesStr: string, expectedStr: string) =
     let tiles = parseTiles tilesStr
     let waitingTiles = getWaitingTiles tiles
-    
-    let expectedTiles = 
+
+    let expectedTiles =
         if expectedStr = "" then
             []
         else
             expectedStr.Split(',')
             |> Array.toList
-            |> List.map (fun s -> 
+            |> List.map (fun s ->
                 match Tile.tryParseFromString s with
                 | Ok tile -> tile
                 | Error err -> failwith (sprintf "Failed to parse tile '%s': %A" s err))
-    
+
     Assert.Equal<Tile list>(expectedTiles, waitingTiles)
 
 // 複雑なテンパイパターンのテスト
@@ -123,7 +123,9 @@ let ``isTenpai returns false for less than 13 tiles`` () =
 
 [<Fact>]
 let ``isTenpai returns false for more than 13 tiles`` () =
-    let tiles = parseTiles "1m,2m,3m,4p,5p,6p,7s,8s,9s,E,E,E,E,E,E"
+    let tiles =
+        parseTiles "1m,2m,3m,4p,5p,6p,7s,8s,9s,E,E,E,E,E,E"
+
     let result = isTenpai tiles
     Assert.False(result)
 
@@ -132,4 +134,3 @@ let ``getWaitingTiles returns empty for invalid tile count`` () =
     let tiles = parseTiles "1m,2m,3m"
     let waitingTiles = getWaitingTiles tiles
     Assert.Empty(waitingTiles)
-

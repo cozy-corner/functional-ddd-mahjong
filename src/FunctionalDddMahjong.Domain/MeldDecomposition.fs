@@ -41,10 +41,13 @@ module internal MeldDecomposition =
     // 汎用的な組み合わせ生成（再帰）
     let rec private combinations n list =
         match n, list with
-        | 0, _ -> [[]]
+        | 0, _ -> [ [] ]
         | _, [] -> []
-        | n, x::xs ->
-            let withX = combinations (n-1) xs |> List.map (fun combo -> x::combo)
+        | n, x :: xs ->
+            let withX =
+                combinations (n - 1) xs
+                |> List.map (fun combo -> x :: combo)
+
             let withoutX = combinations n xs
             withX @ withoutX
 
@@ -53,24 +56,26 @@ module internal MeldDecomposition =
         indexedList
         |> List.map fst
         |> combinations n
-        |> List.map (fun indices -> 
-            indices |> List.map (fun i -> 
-                indexedList |> List.find (fun (idx, _) -> idx = i)))
+        |> List.map (fun indices ->
+            indices
+            |> List.map (fun i -> indexedList |> List.find (fun (idx, _) -> idx = i)))
 
     // ヘルパー関数: ソート済みリストから全ての順子候補を探す
     let private findAllSequenceCandidates sortedTiles =
         let indexed = List.indexed sortedTiles
-        
+
         indexed
         |> indexedCombinations 3
         |> List.choose (fun combination ->
             let indices, tiles = List.unzip combination
+
             match Meld.tryCreateSequence tiles with
             | Ok seq ->
-                let remaining = 
+                let remaining =
                     indexed
                     |> List.filter (fun (i, _) -> not (List.contains i indices))
                     |> List.map snd
+
                 Some(seq, remaining)
             | Error _ -> None)
 
@@ -81,7 +86,11 @@ module internal MeldDecomposition =
             // 目標数の面子が見つかった場合
             | n, _ when n = targetCount -> (foundMelds, remaining) :: allResults
             // 面子がまだ足りないが残り牌で作れない場合
-            | foundCount, remainingCount when foundCount < targetCount && remainingCount < (3 * (targetCount - foundCount)) -> allResults
+            | foundCount, remainingCount when
+                foundCount < targetCount
+                && remainingCount < (3 * (targetCount - foundCount))
+                ->
+                allResults
             // 面子を探す
             | _ ->
                 // 現在の牌をソート
@@ -154,7 +163,7 @@ module internal MeldDecomposition =
                     allMeldPatterns
                     |> List.choose (fun (melds, remaining) ->
                         if List.isEmpty remaining then
-                            Some (melds, pair)
+                            Some(melds, pair)
                         else
                             None)
                 | Error _ -> [])
