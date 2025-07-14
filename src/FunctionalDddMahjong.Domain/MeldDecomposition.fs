@@ -38,45 +38,50 @@ module internal MeldDecomposition =
             else
                 None)
 
+    // 汎用的な組み合わせ生成（再帰）
+    let rec private combinations n list =
+        match n, list with
+        | 0, _ -> [[]]
+        | _, [] -> []
+        | n, x::xs ->
+            let withX = combinations (n-1) xs |> List.map (fun combo -> x::combo)
+            let withoutX = combinations n xs
+            withX @ withoutX
+
+    // インデックス付き組み合わせ
+    let private indexedCombinations n indexedList =
+        indexedList
+        |> List.map fst
+        |> combinations n
+        |> List.map (fun indices -> 
+            indices |> List.map (fun i -> 
+                indexedList |> List.find (fun (idx, _) -> idx = i)))
+
     // ヘルパー関数: ソート済みリストから全ての順子候補を探す
     let private findAllSequenceCandidates sortedTiles =
-        match sortedTiles with
-        | [] -> []
-        | first :: rest ->
-            let rec findSequences remainingForT2 acc =
-                match remainingForT2 with
-                | [] -> acc
-                | t2 :: tailForT3 ->
-                    let sequencesWithT2 =
-                        tailForT3
-                        |> List.choose (fun t3 ->
-                            if first <> t2 && t2 <> t3 then
-                                match Meld.tryCreateSequence [ first; t2; t3 ] with
-                                | Ok seq ->
-                                    let remaining =
-                                        sortedTiles
-                                        |> removeItems first 1
-                                        |> removeItems t2 1
-                                        |> removeItems t3 1
+        let indexed = List.indexed sortedTiles
+        
+        indexed
+        |> indexedCombinations 3
+        |> List.choose (fun combination ->
+            let indices, tiles = List.unzip combination
+            match Meld.tryCreateSequence tiles with
+            | Ok seq ->
+                let remaining = 
+                    indexed
+                    |> List.filter (fun (i, _) -> not (List.contains i indices))
+                    |> List.map snd
+                Some(seq, remaining)
+            | Error _ -> None)
 
-                                    Some(seq, remaining)
-                                | Error _ -> None
-                            else
-                                None)
-
-                    findSequences tailForT3 (sequencesWithT2 @ acc)
-
-            findSequences rest [] |> List.rev
-
-    // バックトラッキングで全ての4面子パターンを探す
-    let private tryFindAllFourMelds tiles =
+    // バックトラッキングで指定数の面子パターンを探す（余り牌も返す）
+    let private tryFindNMeldsInternal targetCount tiles =
         let rec backtrack remaining foundMelds allResults =
             match List.length foundMelds, List.length remaining with
-            // 4面子見つかった場合
-            | 4, 0 -> foundMelds :: allResults // 完成パターンを追加
-            | 4, _ -> allResults // 余り牌がある
-            // 残り牌が足りない場合
-            | _, n when n < 3 -> allResults
+            // 目標数の面子が見つかった場合
+            | n, _ when n = targetCount -> (foundMelds, remaining) :: allResults
+            // 面子がまだ足りないが残り牌で作れない場合
+            | foundCount, remainingCount when foundCount < targetCount && remainingCount < (3 * (targetCount - foundCount)) -> allResults
             // 面子を探す
             | _ ->
                 // 現在の牌をソート
@@ -106,6 +111,12 @@ module internal MeldDecomposition =
                     []
 
         backtrack tiles [] []
+
+    // 4面子を探す（従来の関数、互換性のため）
+    let private tryFindAllFourMelds tiles = tryFindNMeldsInternal 4 tiles
+
+    // 汎用: 指定された数の面子を探す（余り牌も返す）
+    let tryFindNMelds targetCount tiles = tryFindNMeldsInternal targetCount tiles
 
     // ヘルパー関数: 分解結果の正規化（比較用）
     let private normalizeDecomposition (melds, pair) =
@@ -139,9 +150,13 @@ module internal MeldDecomposition =
                     let allMeldPatterns =
                         tryFindAllFourMelds remaining
 
-                    // 各面子パターンと雀頭を組み合わせる
+                    // 各面子パターンと雀頭を組み合わせる（余り牌が0枚の場合のみ）
                     allMeldPatterns
-                    |> List.map (fun melds -> (melds, pair))
+                    |> List.choose (fun (melds, remaining) ->
+                        if List.isEmpty remaining then
+                            Some (melds, pair)
+                        else
+                            None)
                 | Error _ -> [])
 
         // 重複除去: 正規化した結果で比較
