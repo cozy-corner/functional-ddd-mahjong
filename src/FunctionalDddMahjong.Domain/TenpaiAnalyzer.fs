@@ -33,7 +33,8 @@ module TenpaiAnalyzer =
         remove count [] list
 
     // 内部ヘルパー: NumberValueの次の値を取得
-    let private getNextNumber = function
+    let private getNextNumber =
+        function
         | One -> Some Two
         | Two -> Some Three
         | Three -> Some Four
@@ -45,7 +46,8 @@ module TenpaiAnalyzer =
         | Nine -> None
 
     // 内部ヘルパー: NumberValueの前の値を取得
-    let private getPrevNumber = function
+    let private getPrevNumber =
+        function
         | One -> None
         | Two -> Some One
         | Three -> Some Two
@@ -59,7 +61,9 @@ module TenpaiAnalyzer =
     // 内部ヘルパー: 数牌の次の牌を取得（デバッグ用に一時的にpublic）
     let getNextTile tile =
         match getValue tile with
-        | Character n -> getNextNumber n |> Option.map (Character >> create)
+        | Character n ->
+            getNextNumber n
+            |> Option.map (Character >> create)
         | Circle n -> getNextNumber n |> Option.map (Circle >> create)
         | Bamboo n -> getNextNumber n |> Option.map (Bamboo >> create)
         | Honor _ -> None
@@ -67,7 +71,9 @@ module TenpaiAnalyzer =
     // 内部ヘルパー: 数牌の前の牌を取得（デバッグ用に一時的にpublic）
     let getPrevTile tile =
         match getValue tile with
-        | Character n -> getPrevNumber n |> Option.map (Character >> create)
+        | Character n ->
+            getPrevNumber n
+            |> Option.map (Character >> create)
         | Circle n -> getPrevNumber n |> Option.map (Circle >> create)
         | Bamboo n -> getPrevNumber n |> Option.map (Bamboo >> create)
         | Honor _ -> None
@@ -122,7 +128,8 @@ module TenpaiAnalyzer =
             let patterns = ResizeArray<TenpaiPattern>()
 
             // パターン1: 4面子完成の単騎待ち
-            let fourMeldPatterns = MeldDecomposition.tryFindNMelds 4 tiles
+            let fourMeldPatterns =
+                MeldDecomposition.tryFindNMelds 4 tiles
 
             for (melds, remaining) in fourMeldPatterns do
                 match remaining with
@@ -130,20 +137,23 @@ module TenpaiAnalyzer =
                 | _ -> ()
 
             // パターン2: 3面子1雀頭完成
-            let pairCandidates = findPairCandidates tiles
+            let pairCandidates =
+                findPairCandidates tiles
 
             for pairTile in pairCandidates do
                 match Pair.tryCreatePair [ pairTile; pairTile ] with
                 | Ok pair ->
-                    let tilesWithoutPair = removeItems pairTile 2 tiles
-                    let threeMeldPatterns = MeldDecomposition.tryFindNMelds 3 tilesWithoutPair
+                    let tilesWithoutPair =
+                        removeItems pairTile 2 tiles
+
+                    let threeMeldPatterns =
+                        MeldDecomposition.tryFindNMelds 3 tilesWithoutPair
 
                     for (melds, remaining) in threeMeldPatterns do
                         match remaining with
                         | [ _; _ ] as twoTiles ->
                             match analyzeIncompletePair twoTiles with
-                            | Some incomplete ->
-                                patterns.Add(ThreeMeldsOnePairWait(melds, pair, incomplete))
+                            | Some incomplete -> patterns.Add(ThreeMeldsOnePairWait(melds, pair, incomplete))
                             | None -> ()
                         | _ -> ()
                 | Error _ -> ()
