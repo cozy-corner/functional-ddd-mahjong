@@ -49,3 +49,74 @@ type ReachResult =
 
 /// リーチ宣言の結果を表現する型（標準Result型を使用）
 type ReachDeclaration = Result<ReachResult * Score, ReachError>
+
+/// リーチ宣言のバリデーション関数モジュール
+module ReachValidation =
+    open TenpaiAnalyzer
+
+    /// テンパイ状態をチェックする関数
+    let checkTenpai (hand: Hand.Hand) : Result<unit, ReachError> =
+        let tiles = Hand.getTiles hand
+
+        if TenpaiAnalyzer.isTenpai tiles then
+            Ok()
+        else
+            Error NotTenpai
+
+    /// 点数をチェックする関数（1000点以上必要）
+    let checkScore (context: ReachContext) : Result<unit, ReachError> =
+        let currentScore =
+            Score.value context.PlayerScore
+
+        if currentScore >= 1000 then
+            Ok()
+        else
+            Error InsufficientScore
+
+    /// ゲーム段階をチェックする関数（16巡目以降はリーチ不可）
+    let checkGameStage (context: ReachContext) : Result<unit, ReachError> =
+        let currentTurn =
+            Turn.value context.CurrentTurn
+
+        if currentTurn < 16 then
+            Ok()
+        else
+            Error TooLateInGame
+
+    /// リーチ状態をチェックする関数（既にリーチ済みは不可）
+    let checkReachStatus (context: ReachContext) : Result<unit, ReachError> =
+        match context.ReachStatus with
+        | ReachStatus.NotReached -> Ok()
+        | ReachStatus.AlreadyReached -> Error ReachError.AlreadyReached
+
+/// リーチ宣言のメイン実行モジュール
+module ReachDeclaration =
+    open ReachValidation
+
+    /// バリデーション結果をリーチ結果に変換する関数
+    let private determineReachResult (context: ReachContext) : ReachResult * Score =
+        let currentTurn =
+            Turn.value context.CurrentTurn
+
+        let currentScore =
+            Score.value context.PlayerScore
+
+        let newScore =
+            match Score.create (currentScore - 1000) with
+            | Ok score -> score
+            | Error msg ->
+                // This should never happen since we validated currentScore >= 1000
+                failwith $"Unexpected score calculation error: {msg}"
+
+        if currentTurn = 1 then
+            (DoubleReach, newScore) // 1巡目はダブルリーチ
+        else
+            (Reach, newScore) // それ以外は通常リーチ
+
+    /// リーチ宣言のメイン関数（Railway-Oriented Programming）
+    let declareReach (hand: Hand.Hand) (context: ReachContext) : ReachDeclaration =
+        checkTenpai hand
+        |> Result.bind (fun _ -> checkScore context)
+        |> Result.bind (fun _ -> checkGameStage context)
+        |> Result.bind (fun _ -> checkReachStatus context)
+        |> Result.map (fun _ -> determineReachResult context)
