@@ -104,7 +104,9 @@ module ReachDeclaration =
         let newScore =
             match Score.create (currentScore - 1000) with
             | Ok score -> score
-            | Error _ -> failwith "Score calculation failed"
+            | Error msg ->
+                // This should never happen since we validated currentScore >= 1000
+                failwith $"Unexpected score calculation error: {msg}"
 
         if currentTurn = 1 then
             (DoubleReach, newScore) // 1巡目はダブルリーチ
