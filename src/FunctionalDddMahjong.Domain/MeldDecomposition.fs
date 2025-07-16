@@ -1,6 +1,6 @@
 namespace FunctionalDddMahjong.Domain
 
-// 内部実装モジュール - 面子分解のアルゴリズム
+// 面子分解のアルゴリズム
 module internal MeldDecomposition =
     open Tile
     open Meld

@@ -1,8 +1,9 @@
-module FunctionalDddMahjong.Domain.Tests.HandDecompositionTests
+module FunctionalDddMahjong.DomainServices.Tests.HandDecompositionTests
 
 open Xunit
 open FunctionalDddMahjong.Domain.Tile
 open FunctionalDddMahjong.Domain.Hand
+open FunctionalDddMahjong.Domain
 open FunctionalDddMahjong.Domain.Meld
 open FunctionalDddMahjong.Domain.Pair
 
@@ -52,7 +53,9 @@ let ``tryDecomposeAll returns empty list for 13-tile waiting hand`` () =
 
     match tryCreateFromDeal tiles with
     | Ok waitingHand ->
-        let result = tryDecomposeAll waitingHand
+        let result =
+            Hand.tryDecomposeAll waitingHand
+
         Assert.Empty(result)
     | Error e -> failwith $"Test setup failed: {e}"
 
@@ -78,16 +81,20 @@ let ``tryDecomposeAll returns correct decomposition patterns`` (tileString: stri
     let hand =
         createReadyHand (createTiles tileStrings)
 
-    let result = tryDecomposeAll hand
+    let result = Hand.tryDecomposeAll hand
 
     let actualPatterns =
         result
         |> List.map (fun (melds, pair) ->
             let pairStr =
-                getPairTiles pair |> List.head |> toShortString
+                Pair.getPairTiles pair
+                |> List.head
+                |> Tile.toShortString
 
             let meldStrs =
-                melds |> List.map meldToShortString |> List.sort
+                melds
+                |> List.map Meld.meldToShortString
+                |> List.sort
 
             let meldsStr = String.concat "," meldStrs
             $"{pairStr}:{meldsStr}")
@@ -124,7 +131,7 @@ let ``tryDecomposeAll returns empty for invalid hands`` () =
         let hand =
             createReadyHand (createTiles tileStrings)
 
-        let result = tryDecomposeAll hand
+        let result = Hand.tryDecomposeAll hand
         Assert.Empty(result))
 
 
@@ -152,7 +159,7 @@ let ``isWinningHand returns true for valid winning hands`` (tileString: string) 
     let hand =
         createReadyHand (createTiles tileStrings)
 
-    Assert.True(isWinningHand hand)
+    Assert.True(Hand.isWinningHand hand)
 
 [<Theory>]
 // ノーテン手（和了にならない手牌）のパターン
@@ -172,7 +179,7 @@ let ``isWinningHand returns false for non-winning hands`` (tileString: string) =
     let hand =
         createReadyHand (createTiles tileStrings)
 
-    Assert.False(isWinningHand hand)
+    Assert.False(Hand.isWinningHand hand)
 
 [<Fact>]
 let ``isWinningHand returns false for 13-tile waiting hand`` () =
@@ -194,5 +201,5 @@ let ``isWinningHand returns false for 13-tile waiting hand`` () =
               "N" ]
 
     match tryCreateFromDeal tiles with
-    | Ok waitingHand -> Assert.False(isWinningHand waitingHand)
+    | Ok waitingHand -> Assert.False(Hand.isWinningHand waitingHand)
     | Error e -> failwith $"Test setup failed: {e}"
