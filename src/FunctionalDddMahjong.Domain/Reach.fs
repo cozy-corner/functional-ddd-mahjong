@@ -92,7 +92,7 @@ module ReachValidation =
 /// リーチ宣言のメイン実行モジュール
 module ReachDeclaration =
     open ReachValidation
-    open Validation
+    open FunctionalDddMahjong.SharedKernel.Validation
 
     /// バリデーション結果をリーチ結果に変換する関数
     let private determineReachResult (context: ReachContext) : ReachResult * Score =

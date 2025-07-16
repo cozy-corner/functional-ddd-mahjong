@@ -15,8 +15,11 @@
     <Compile Include="TenpaiAnalyzer.fs" />
     <Compile Include="Yaku.fs" />
     <Compile Include="YakuAnalyzer.fs" />
-    <Compile Include="Validation.fs" />
     <Compile Include="Reach.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
   </ItemGroup>
 
 </Project>

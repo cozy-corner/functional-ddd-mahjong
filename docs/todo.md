@@ -181,11 +181,11 @@
 **学習目標：関数型アーキテクチャの実践（書籍Chapter 3）**
 **設計ドキュメント：[architecture.md](./architecture.md)**
 
-### 6.1 SharedKernelの分離
-- [ ] FunctionalDddMahjong.SharedKernelプロジェクト作成
-- [ ] Validation.fsを移動（汎用的なエラー集約ユーティリティ）
-- [ ] Result型の拡張関数を追加
-- [ ] 依存関係の確認とテスト
+### 6.1 SharedKernelの分離 ✅
+- [x] FunctionalDddMahjong.SharedKernelプロジェクト作成
+- [x] Validation.fsを移動（汎用的なエラー集約ユーティリティ）
+- [x] プロジェクト依存関係の更新（Domain、Testsプロジェクト）
+- [x] 全テストの動作確認（308テスト成功）
 
 ### 6.2 DomainServicesの分離
 - [ ] FunctionalDddMahjong.DomainServicesプロジェクト作成
@@ -372,4 +372,4 @@
   - **関数型原則**: 純粋関数による副作用のない実装
   - **型レベル安全性**: コンパイル時にエラー処理の正確性を保証
 - **実用価値**: WebフォームやAPIバリデーションなど、実世界でのエラーハンドリングに直接応用可能
-- **次の課題**: 拡張課題（フェーズ6以降）または他のドメイン機能の実装
+- **次の課題**: フェーズ6（アーキテクチャリファクタリング）
