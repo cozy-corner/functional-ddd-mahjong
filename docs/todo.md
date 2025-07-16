@@ -124,10 +124,12 @@
 - [x] 純正九蓮宝燈対応（9種全待ち）
 - [x] MeldDecomposition重複除去による性能最適化
 
-### 5.2 リーチドメインの実装
-- [ ] ReachContext型の定義（プレイヤー点数、ゲーム段階、リーチ状態）
-- [ ] ReachError型の定義（ドメイン特化エラー）
-- [ ] ReachDeclaration型の定義（宣言結果）
+### 5.2 リーチドメインの実装 ✅
+- [x] ReachContext型の定義（プレイヤー点数、ゲーム段階、リーチ状態）
+- [x] ReachError型の定義（ドメイン特化エラー）
+- [x] ReachDeclaration型の定義（宣言結果）
+- [x] Turn型とScore型のValue Object実装（制約付き）
+- [x] 標準Result型による型安全なエラーハンドリング設計
 
 ### 5.3 Railway-Oriented Programming の実践
 - [ ] リーチ宣言バリデーションパイプラインの実装

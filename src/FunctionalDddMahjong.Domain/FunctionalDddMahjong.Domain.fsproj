@@ -15,6 +15,7 @@
     <Compile Include="TenpaiAnalyzer.fs" />
     <Compile Include="Yaku.fs" />
     <Compile Include="YakuAnalyzer.fs" />
+    <Compile Include="Reach.fs" />
   </ItemGroup>
 
 </Project>
