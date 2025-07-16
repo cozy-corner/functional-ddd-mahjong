@@ -81,6 +81,45 @@ let analyzeIncompletePair tiles =
         // ...
 ```
 
+#### 高階関数による関数型リファクタリング
+PRレビューフィードバックを受けて、ミュータブルな`ResizeArray`をイミュータブルなリスト操作に置換：
+
+**`List.choose`**: フィルタリングとマッピングを同時実行
+```fsharp
+// Before: 命令型スタイル
+let patterns = ResizeArray<TenpaiPattern>()
+for (melds, remaining) in fourMeldPatterns do
+    match remaining with
+    | [ single ] -> patterns.Add(FourMeldsWait(melds, single))
+    | _ -> ()
+
+// After: 関数型スタイル
+let fourMeldsPatterns =
+    MeldDecomposition.tryFindNMelds 4 tiles
+    |> List.choose (fun (melds, remaining) ->
+        match remaining with
+        | [ single ] -> Some(FourMeldsWait(melds, single))
+        | _ -> None)
+```
+
+**`List.collect`**: 各要素から複数結果を生成し連結（flatMap）
+```fsharp
+// 各雀頭候補から複数のテンパイパターンを生成し、全て連結
+let threeMeldsOnePairPatterns =
+    findPairCandidates tiles
+    |> List.collect (fun pairTile ->
+        match Pair.tryCreatePair [ pairTile; pairTile ] with
+        | Ok pair ->
+            // 内部でList.chooseを使用してパターンリストを生成
+        | Error _ -> [])  // エラー時は空リスト
+```
+
+**学習ポイント**:
+- `List.choose`: `('T -> 'U option) -> 'T list -> 'U list` - 条件付き変換
+- `List.collect`: `('T -> 'U list) -> 'T list -> 'U list` - flatMap操作
+- 副作用のない純粋関数による実装
+- パイプライン演算子による関数合成の美しさ
+
 ### 2. 複雑度対応とテスト駆動開発
 
 #### 段階的な複雑度向上
