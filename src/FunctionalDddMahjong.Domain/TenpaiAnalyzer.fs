@@ -58,8 +58,8 @@ module TenpaiAnalyzer =
         | Eight -> Some Seven
         | Nine -> Some Eight
 
-    // 内部ヘルパー: 数牌の次の牌を取得（デバッグ用に一時的にpublic）
-    let getNextTile tile =
+    // 内部ヘルパー: 数牌の次の牌を取得
+    let private getNextTile tile =
         match getValue tile with
         | Character n ->
             getNextNumber n
@@ -68,8 +68,8 @@ module TenpaiAnalyzer =
         | Bamboo n -> getNextNumber n |> Option.map (Bamboo >> create)
         | Honor _ -> None
 
-    // 内部ヘルパー: 数牌の前の牌を取得（デバッグ用に一時的にpublic）
-    let getPrevTile tile =
+    // 内部ヘルパー: 数牌の前の牌を取得
+    let private getPrevTile tile =
         match getValue tile with
         | Character n ->
             getPrevNumber n
@@ -78,8 +78,8 @@ module TenpaiAnalyzer =
         | Bamboo n -> getPrevNumber n |> Option.map (Bamboo >> create)
         | Honor _ -> None
 
-    // 内部ヘルパー: 2枚の牌から待ち牌を判定（デバッグ用に一時的にpublic）
-    let analyzeIncompletePair tiles =
+    // 内部ヘルパー: 2枚の牌から待ち牌を判定
+    let private analyzeIncompletePair tiles =
         match List.sortWith Tile.compare tiles with
         | [ t1; t2 ] when t1 = t2 ->
             // 対子は双碰待ちの一部となる
