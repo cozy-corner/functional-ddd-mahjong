@@ -18,6 +18,7 @@
     <Compile Include="TenpaiAnalyzerTests.fs" />
     <Compile Include="YakuTests.fs" />
     <Compile Include="YakuAnalyzerTests.fs" />
+    <Compile Include="ReachTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
