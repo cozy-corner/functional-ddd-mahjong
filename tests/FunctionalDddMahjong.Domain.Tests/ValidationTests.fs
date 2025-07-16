@@ -2,6 +2,7 @@ namespace FunctionalDddMahjong.Domain.Tests
 
 open Xunit
 open FunctionalDddMahjong.Domain
+open FunctionalDddMahjong.SharedKernel
 
 module ValidationTests =
 
