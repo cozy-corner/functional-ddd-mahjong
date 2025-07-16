@@ -167,3 +167,93 @@ module ReachTests =
             match result with
             | Error TooLateInGame -> Assert.True(true)
             | _ -> Assert.Fail("Should return TooLateInGame error")
+
+    // エラー集約版のテスト
+    [<Fact>]
+    let ``declareReachWithAllErrors should succeed with valid conditions`` () =
+        let hand = TestHelpers.createTenpaiHand ()
+
+        let context =
+            TestHelpers.createContext 25000 5 ReachStatus.NotReached
+
+        let result =
+            ReachDeclaration.declareReachWithAllErrors hand context
+
+        match result with
+        | Ok(reachType, newScore) ->
+            Assert.Equal(Reach, reachType)
+            Assert.Equal(24000, Score.value newScore)
+        | Error errors -> Assert.Fail($"Should succeed but got errors: {errors}")
+
+    [<Fact>]
+    let ``declareReachWithAllErrors should collect single error`` () =
+        let hand =
+            TestHelpers.createNonTenpaiHand ()
+
+        let context =
+            TestHelpers.createContext 25000 5 ReachStatus.NotReached
+
+        let result =
+            ReachDeclaration.declareReachWithAllErrors hand context
+
+        match result with
+        | Ok(reachType, score) -> Assert.Fail($"Should fail but got success: {reachType}, {Score.value score}")
+        | Error errors ->
+            Assert.Equal(1, List.length errors)
+            Assert.Equal(NotTenpai, List.head errors)
+
+    [<Fact>]
+    let ``declareReachWithAllErrors should collect multiple errors`` () =
+        let hand =
+            TestHelpers.createNonTenpaiHand ()
+
+        let context =
+            TestHelpers.createContext 500 17 ReachStatus.AlreadyReached
+
+        let result =
+            ReachDeclaration.declareReachWithAllErrors hand context
+
+        match result with
+        | Ok(reachType, score) -> Assert.Fail($"Should fail but got success: {reachType}, {Score.value score}")
+        | Error errors ->
+            Assert.Equal(4, List.length errors)
+            Assert.Contains(NotTenpai, errors)
+            Assert.Contains(InsufficientScore, errors)
+            Assert.Contains(TooLateInGame, errors)
+            Assert.Contains(AlreadyReached, errors)
+
+    [<Fact>]
+    let ``declareReachWithAllErrors should collect two errors`` () =
+        let hand = TestHelpers.createTenpaiHand ()
+
+        let context =
+            TestHelpers.createContext 500 17 ReachStatus.NotReached
+
+        let result =
+            ReachDeclaration.declareReachWithAllErrors hand context
+
+        match result with
+        | Ok(reachType, score) -> Assert.Fail($"Should fail but got success: {reachType}, {Score.value score}")
+        | Error errors ->
+            Assert.Equal(2, List.length errors)
+            Assert.Contains(InsufficientScore, errors)
+            Assert.Contains(TooLateInGame, errors)
+
+    [<Fact>]
+    let ``declareReachWithAllErrors should collect three errors`` () =
+        let hand =
+            TestHelpers.createNonTenpaiHand ()
+
+        let context =
+            TestHelpers.createContext 500 17 ReachStatus.NotReached
+
+        let result =
+            ReachDeclaration.declareReachWithAllErrors hand context
+
+        match result with
+        | Ok(reachType, score) -> Assert.Fail($"Should fail but got success: {reachType}, {Score.value score}")
+        | Error errors ->
+            Assert.Equal(3, List.length errors)
+            Assert.Contains(NotTenpai, errors)
+            Assert.Contains(InsufficientScore, errors)
+            Assert.Contains(TooLateInGame, errors)
