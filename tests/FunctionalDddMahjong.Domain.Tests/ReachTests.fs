@@ -3,6 +3,7 @@ namespace FunctionalDddMahjong.Domain.Tests
 open System
 open Xunit
 open FunctionalDddMahjong.Domain
+open FunctionalDddMahjong.Workflows
 
 module ReachTests =
 

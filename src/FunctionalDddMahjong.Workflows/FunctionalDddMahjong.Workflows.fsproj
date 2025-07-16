@@ -7,16 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Tile.fs" />
-    <Compile Include="Meld.fs" />
-    <Compile Include="Pair.fs" />
-    <Compile Include="MeldDecomposition.fs" />
-    <Compile Include="Hand.fs" />
-    <Compile Include="Yaku.fs" />
+    <Compile Include="ReachWorkflow.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
     <ProjectReference Include="..\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
+    <ProjectReference Include="..\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
   </ItemGroup>
 
 </Project>
