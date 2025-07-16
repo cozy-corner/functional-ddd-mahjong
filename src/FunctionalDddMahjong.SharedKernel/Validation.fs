@@ -1,4 +1,4 @@
-namespace FunctionalDddMahjong.Domain
+namespace FunctionalDddMahjong.SharedKernel
 
 /// エラー集約バリデーションのためのユーティリティモジュール
 module Validation =
