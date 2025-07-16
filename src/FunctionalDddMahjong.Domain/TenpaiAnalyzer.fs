@@ -125,40 +125,34 @@ module TenpaiAnalyzer =
         if List.length tiles <> 13 then
             []
         else
-            let patterns = ResizeArray<TenpaiPattern>()
-
             // パターン1: 4面子完成の単騎待ち
-            let fourMeldPatterns =
+            let fourMeldsPatterns =
                 MeldDecomposition.tryFindNMelds 4 tiles
-
-            for (melds, remaining) in fourMeldPatterns do
-                match remaining with
-                | [ single ] -> patterns.Add(FourMeldsWait(melds, single))
-                | _ -> ()
+                |> List.choose (fun (melds, remaining) ->
+                    match remaining with
+                    | [ single ] -> Some(FourMeldsWait(melds, single))
+                    | _ -> None)
 
             // パターン2: 3面子1雀頭完成
-            let pairCandidates =
+            let threeMeldsOnePairPatterns =
                 findPairCandidates tiles
+                |> List.collect (fun pairTile ->
+                    match Pair.tryCreatePair [ pairTile; pairTile ] with
+                    | Ok pair ->
+                        let tilesWithoutPair =
+                            removeItems pairTile 2 tiles
 
-            for pairTile in pairCandidates do
-                match Pair.tryCreatePair [ pairTile; pairTile ] with
-                | Ok pair ->
-                    let tilesWithoutPair =
-                        removeItems pairTile 2 tiles
-
-                    let threeMeldPatterns =
                         MeldDecomposition.tryFindNMelds 3 tilesWithoutPair
+                        |> List.choose (fun (melds, remaining) ->
+                            match remaining with
+                            | [ _; _ ] as twoTiles ->
+                                match analyzeIncompletePair twoTiles with
+                                | Some incomplete -> Some(ThreeMeldsOnePairWait(melds, pair, incomplete))
+                                | None -> None
+                            | _ -> None)
+                    | Error _ -> [])
 
-                    for (melds, remaining) in threeMeldPatterns do
-                        match remaining with
-                        | [ _; _ ] as twoTiles ->
-                            match analyzeIncompletePair twoTiles with
-                            | Some incomplete -> patterns.Add(ThreeMeldsOnePairWait(melds, pair, incomplete))
-                            | None -> ()
-                        | _ -> ()
-                | Error _ -> ()
-
-            patterns |> List.ofSeq
+            fourMeldsPatterns @ threeMeldsOnePairPatterns
 
     // テンパイパターンから待ち牌を取得
     let private getWaitingTilesFromPattern pattern =
