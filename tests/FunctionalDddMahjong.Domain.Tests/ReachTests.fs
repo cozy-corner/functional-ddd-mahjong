@@ -13,7 +13,9 @@ module ReachTests =
                 { PlayerScore = scoreValue
                   CurrentTurn = turnValue
                   ReachStatus = reachStatus }
-            | _ -> failwith "Invalid score or turn"
+            | Error scoreErr, Ok _ -> failwith $"Invalid score: {scoreErr}"
+            | Ok _, Error turnErr -> failwith $"Invalid turn: {turnErr}"
+            | Error scoreErr, Error turnErr -> failwith $"Invalid score and turn: {scoreErr}, {turnErr}"
 
         let private parseTiles (tilesStr: string) =
             tilesStr.Split(',')
