@@ -78,29 +78,36 @@ module Hand =
         | Ready _ -> true
         | Waiting _ -> false
 
-    // 手牌を全ての可能な4面子1雀頭パターンに分解する
-    // 分解可能な全てのパターンをリストで返す（分解不可の場合は空リスト）
-    let tryDecomposeAll hand =
-        match hand with
-        | Waiting _ -> [] // 13牌では分解不可
-        | Ready tiles ->
-            // 内部実装はMeldDecompositionモジュールに委譲
-            MeldDecomposition.tryDecomposeAllInternal tiles
-
     // 和了形を表現する型（4面子1雀頭の分解パターンを保持）
-    type WinningHand = private WinningHand of (Meld.Meld list * Pair.Pair) list
-
-    // 和了形の作成（和了手のみ作成可能）
-    let tryCreateWinningHand hand =
-        match tryDecomposeAll hand with
-        | [] -> None // 分解パターンが存在しない = ノーテン
-        | decompositions -> Some(WinningHand decompositions) // 和了形として作成
+    type WinningHand = WinningHand of (Meld.Meld list * Pair.Pair) list
 
     // 和了形から分解パターンを取得
     let getDecompositions (WinningHand decompositions) = decompositions
 
-    // 手牌が和了形（4面子1雀頭に分解可能）かを判定する
+    // 手牌を全ての可能な4面子1雀頭パターンに分解する
+    let tryDecomposeAll hand =
+        match hand with
+        | Waiting _ -> []
+        | Ready tiles -> MeldDecomposition.tryDecomposeAllInternal tiles
+
+    // 和了形の作成
+    let tryCreateWinningHand hand =
+        match tryDecomposeAll hand with
+        | [] -> None
+        | decompositions -> Some(WinningHand decompositions)
+
+    // 和了形かどうかの判定
     let isWinningHand hand =
         match tryCreateWinningHand hand with
-        | None -> false // 分解パターンが存在しない = ノーテン
-        | Some _ -> true // 1つ以上の分解パターンが存在 = 和了
+        | None -> false
+        | Some _ -> true
+
+    // 指定された数の面子を探す（テンパイ分析用）
+    let tryFindNMelds targetCount tiles =
+        MeldDecomposition.tryFindNMelds targetCount tiles
+
+    // 牌の比較関数（テンパイ分析用）
+    let compareTiles = Tile.compare
+
+    // 雀頭作成関数（テンパイ分析用）
+    let tryCreatePairFromTiles tiles = Pair.tryCreatePair tiles

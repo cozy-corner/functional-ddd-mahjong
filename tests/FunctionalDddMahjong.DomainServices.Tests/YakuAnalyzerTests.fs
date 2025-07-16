@@ -1,11 +1,12 @@
-namespace FunctionalDddMahjong.Domain.Tests
+namespace FunctionalDddMahjong.DomainServices.Tests
 
 open Xunit
 open FunctionalDddMahjong.Domain
 open FunctionalDddMahjong.Domain.Tile
 open FunctionalDddMahjong.Domain.Hand
 open FunctionalDddMahjong.Domain.Yaku
-open FunctionalDddMahjong.Domain.YakuAnalyzer
+open FunctionalDddMahjong.DomainServices
+open FunctionalDddMahjong.DomainServices.YakuAnalyzer
 
 module YakuAnalyzerTests =
 

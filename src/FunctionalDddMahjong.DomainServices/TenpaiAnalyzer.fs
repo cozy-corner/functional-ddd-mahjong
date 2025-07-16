@@ -1,10 +1,11 @@
-namespace FunctionalDddMahjong.Domain
+namespace FunctionalDddMahjong.DomainServices
 
 // テンパイ判定モジュール
 module TenpaiAnalyzer =
-    open Tile
-    open Meld
-    open Pair
+    open FunctionalDddMahjong.Domain
+    open FunctionalDddMahjong.Domain.Tile
+    open FunctionalDddMahjong.Domain.Meld
+    open FunctionalDddMahjong.Domain.Pair
 
     // テンパイのパターンを表現する型
     type TenpaiPattern =
@@ -80,7 +81,7 @@ module TenpaiAnalyzer =
 
     // 内部ヘルパー: 2枚の牌から待ち牌を判定
     let private analyzeIncompletePair tiles =
-        match List.sortWith Tile.compare tiles with
+        match List.sortWith Hand.compareTiles tiles with
         | [ t1; t2 ] when t1 = t2 ->
             // 対子は双碰待ちの一部となる
             Some(Shanpon(t1, t2))
@@ -127,7 +128,7 @@ module TenpaiAnalyzer =
         else
             // パターン1: 4面子完成の単騎待ち
             let fourMeldsPatterns =
-                MeldDecomposition.tryFindNMelds 4 tiles
+                Hand.tryFindNMelds 4 tiles
                 |> List.choose (fun (melds, remaining) ->
                     match remaining with
                     | [ single ] -> Some(FourMeldsWait(melds, single))
@@ -137,12 +138,12 @@ module TenpaiAnalyzer =
             let threeMeldsOnePairPatterns =
                 findPairCandidates tiles
                 |> List.collect (fun pairTile ->
-                    match Pair.tryCreatePair [ pairTile; pairTile ] with
+                    match Hand.tryCreatePairFromTiles [ pairTile; pairTile ] with
                     | Ok pair ->
                         let tilesWithoutPair =
                             removeItems pairTile 2 tiles
 
-                        MeldDecomposition.tryFindNMelds 3 tilesWithoutPair
+                        Hand.tryFindNMelds 3 tilesWithoutPair
                         |> List.choose (fun (melds, remaining) ->
                             match remaining with
                             | [ _; _ ] as twoTiles ->
@@ -177,4 +178,4 @@ module TenpaiAnalyzer =
         patterns
         |> List.collect getWaitingTilesFromPattern
         |> List.distinct
-        |> List.sortWith Tile.compare
+        |> List.sortWith Hand.compareTiles
