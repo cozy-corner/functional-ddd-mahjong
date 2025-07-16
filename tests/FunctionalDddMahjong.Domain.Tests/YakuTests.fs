@@ -8,6 +8,7 @@ open FunctionalDddMahjong.Domain.Yaku
 module YakuTests =
 
     // テスト用のヘルパー関数: 文字列のリストから牌を作成
+
     let private createTiles tileStrings =
         tileStrings
         |> List.choose (fun str ->

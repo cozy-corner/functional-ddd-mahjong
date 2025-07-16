@@ -1,9 +1,9 @@
-module FunctionalDddMahjong.Domain.Tests.TenpaiAnalyzerTests
+module FunctionalDddMahjong.DomainServices.Tests.TenpaiAnalyzerTests
 
 open Xunit
 open FunctionalDddMahjong.Domain
 open FunctionalDddMahjong.Domain.Tile
-open FunctionalDddMahjong.Domain.TenpaiAnalyzer
+open FunctionalDddMahjong.DomainServices.TenpaiAnalyzer
 
 // テスト用ヘルパー関数
 let private parseTiles (tilesStr: string) =

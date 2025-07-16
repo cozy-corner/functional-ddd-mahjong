@@ -1,4 +1,4 @@
-namespace FunctionalDddMahjong.Domain
+namespace FunctionalDddMahjong.Workflows
 
 /// 巡目を表現するValue Object（1-18の制約）
 type Turn = private Turn of int
@@ -52,7 +52,11 @@ type ReachDeclaration = Result<ReachResult * Score, ReachError>
 
 /// リーチ宣言のバリデーション関数モジュール
 module ReachValidation =
-    open TenpaiAnalyzer
+    open FunctionalDddMahjong.Domain
+    open FunctionalDddMahjong.Domain.Hand
+    open FunctionalDddMahjong.DomainServices
+
+    module Hand = FunctionalDddMahjong.Domain.Hand
 
     /// テンパイ状態をチェックする関数
     let checkTenpai (hand: Hand.Hand) : Result<unit, ReachError> =
@@ -93,6 +97,8 @@ module ReachValidation =
 module ReachDeclaration =
     open ReachValidation
     open FunctionalDddMahjong.SharedKernel.Validation
+
+    module Hand = FunctionalDddMahjong.Domain.Hand
 
     /// バリデーション結果をリーチ結果に変換する関数
     let private determineReachResult (context: ReachContext) : ReachResult * Score =
