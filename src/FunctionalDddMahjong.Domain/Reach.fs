@@ -92,6 +92,7 @@ module ReachValidation =
 /// リーチ宣言のメイン実行モジュール
 module ReachDeclaration =
     open ReachValidation
+    open Validation
 
     /// バリデーション結果をリーチ結果に変換する関数
     let private determineReachResult (context: ReachContext) : ReachResult * Score =
@@ -113,10 +114,24 @@ module ReachDeclaration =
         else
             (Reach, newScore) // それ以外は通常リーチ
 
-    /// リーチ宣言のメイン関数（Railway-Oriented Programming）
+    /// リーチ宣言のメイン関数（Railway-Oriented Programming: fail-fast方式）
     let declareReach (hand: Hand.Hand) (context: ReachContext) : ReachDeclaration =
         checkTenpai hand
         |> Result.bind (fun _ -> checkScore context)
         |> Result.bind (fun _ -> checkGameStage context)
         |> Result.bind (fun _ -> checkReachStatus context)
+        |> Result.map (fun _ -> determineReachResult context)
+
+    /// リーチ宣言（エラー集約版: 全てのバリデーションエラーを収集）
+    let declareReachWithAllErrors
+        (hand: Hand.Hand)
+        (context: ReachContext)
+        : Result<ReachResult * Score, ReachError list> =
+        let validations =
+            [ fun () -> checkTenpai hand
+              fun () -> checkScore context
+              fun () -> checkGameStage context
+              fun () -> checkReachStatus context ]
+
+        validateAll validations
         |> Result.map (fun _ -> determineReachResult context)
