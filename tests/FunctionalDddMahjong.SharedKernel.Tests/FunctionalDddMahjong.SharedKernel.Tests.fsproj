@@ -9,18 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Tests.fs" />
-    <Compile Include="TenpaiAnalyzerTests.fs" />
-    <Compile Include="YakuAnalyzerTests.fs" />
-    <Compile Include="HandDecompositionTests.fs" />
+    <Compile Include="ValidationTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
     <ProjectReference Include="..\..\src\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
-    <ProjectReference Include="..\..\src\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
   </ItemGroup>
 
 </Project>

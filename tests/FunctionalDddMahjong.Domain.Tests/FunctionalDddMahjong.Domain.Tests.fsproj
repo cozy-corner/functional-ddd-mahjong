@@ -15,22 +15,13 @@
     <Compile Include="MeldTests.fs" />
     <Compile Include="PairTests.fs" />
     <Compile Include="YakuTests.fs" />
-    <Compile Include="ValidationTests.fs" />
-    <Compile Include="ReachTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="xunit" Version="2.5.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
     <ProjectReference Include="..\..\src\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
-    <ProjectReference Include="..\..\src\FunctionalDddMahjong.Workflows\FunctionalDddMahjong.Workflows.fsproj" />
   </ItemGroup>
 
 </Project>
