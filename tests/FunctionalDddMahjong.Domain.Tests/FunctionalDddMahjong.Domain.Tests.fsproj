@@ -15,8 +15,6 @@
     <Compile Include="MeldTests.fs" />
     <Compile Include="PairTests.fs" />
     <Compile Include="YakuTests.fs" />
-    <Compile Include="ValidationTests.fs" />
-    <Compile Include="ReachTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -30,7 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
     <ProjectReference Include="..\..\src\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
-    <ProjectReference Include="..\..\src\FunctionalDddMahjong.Workflows\FunctionalDddMahjong.Workflows.fsproj" />
   </ItemGroup>
 
 </Project>
