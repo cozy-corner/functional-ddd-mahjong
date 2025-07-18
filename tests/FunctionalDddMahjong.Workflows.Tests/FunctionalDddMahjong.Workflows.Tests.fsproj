@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ReachTests.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
+    <ProjectReference Include="..\..\src\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
+    <ProjectReference Include="..\..\src\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
+    <ProjectReference Include="..\..\src\FunctionalDddMahjong.Workflows\FunctionalDddMahjong.Workflows.fsproj" />
+  </ItemGroup>
+
+</Project>
