@@ -224,12 +224,12 @@
 **学習目標：型安全な境界設計とデータ変換**
 
 #### PR1: 和了判定API - プロジェクトセットアップとDTO定義
-- [ ] FunctionalDddMahjong.Apiプロジェクト作成
-- [ ] プロジェクト参照設定（Domain、DomainServices）
-- [ ] Dto.fs作成（和了判定用DTO型定義）
-  - [ ] CheckWinningHandRequest: 和了判定リクエスト（tiles: string list、14枚固定）
-  - [ ] YakuInfo: 役情報（name, displayName, han, description）
-  - [ ] CheckWinningHandResponse: 判定結果（isWinningHand, detectedYaku, totalHan）
+- [x] FunctionalDddMahjong.Apiプロジェクト作成
+- [x] プロジェクト参照設定（Domain、DomainServices）
+- [x] Dto.fs作成（和了判定用DTO型定義）
+  - [x] CheckWinningHandRequest: 和了判定リクエスト（tiles: string list、14枚固定）
+  - [x] YakuInfo: 役情報（name, displayName, han, description）
+  - [x] CheckWinningHandResponse: 判定結果（isWinningHand, detectedYaku, totalHan）
 
 #### PR2: 和了判定API - 入力変換とバリデーション
 - [ ] CheckWinningHandHandler.fs作成
