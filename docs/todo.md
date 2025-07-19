@@ -223,40 +223,38 @@
 ### 7.1 APIレイヤーの実装
 **学習目標：型安全な境界設計とデータ変換**
 
-#### PR1: 手牌分析API - プロジェクトセットアップとDTO定義
+#### PR1: 和了判定API - プロジェクトセットアップとDTO定義
 - [ ] FunctionalDddMahjong.Apiプロジェクト作成
 - [ ] プロジェクト参照設定（Domain、DomainServices）
-- [ ] Dto.fs作成（手牌分析用DTO型定義）
-  - [ ] AnalyzeHandRequest: 手牌分析リクエスト（tiles: string list）
+- [ ] Dto.fs作成（和了判定用DTO型定義）
+  - [ ] CheckWinningHandRequest: 和了判定リクエスト（tiles: string list、14枚固定）
   - [ ] YakuInfo: 役情報（name, displayName, han, description）
-  - [ ] HandAnalysisResponse: 分析結果（isWinningHand, isTenpai, detectedYaku, totalHan, waitingTiles）
+  - [ ] CheckWinningHandResponse: 判定結果（isWinningHand, detectedYaku, totalHan）
 
-#### PR2: 手牌分析API - 入力変換とバリデーション
-- [ ] HandAnalysisHandler.fs作成
+#### PR2: 和了判定API - 入力変換とバリデーション
+- [ ] CheckWinningHandHandler.fs作成
 - [ ] parseAndValidateRequest関数の実装
   - [ ] 牌文字列リストのパース（string list → Result<Tile list, string>）
-  - [ ] 手牌作成とバリデーション（13枚または14枚の検証）
-  - [ ] エラーメッセージの明確化（"Invalid tile: 10m", "Hand must have 13 or 14 tiles"など）
+  - [ ] 手牌作成とバリデーション（14枚の検証）
+  - [ ] エラーメッセージの明確化（"Invalid tile: 10m", "Hand must have exactly 14 tiles"など）
 - [ ] 単体テストの実装
-  - [ ] 正常系：有効な手牌のパース
-  - [ ] 異常系：無効な牌、枚数エラー
+  - [ ] 正常系：有効な14枚手牌のパース
+  - [ ] 異常系：無効な牌、枚数エラー（13枚、15枚など）
 
-#### PR3: 手牌分析API - ドメイン処理と出力変換
-- [ ] HandAnalysisService.fs作成
-- [ ] analyzeHand関数の実装
+#### PR3: 和了判定API - ドメイン処理と出力変換
+- [ ] CheckWinningHandService.fs作成
+- [ ] checkWinningHand関数の実装
   - [ ] 和了判定（Hand.isWinningHand）
   - [ ] 役判定（YakuAnalyzer.analyzeYaku）
-  - [ ] テンパイ判定（TenpaiAnalyzer.isTenpai, getWaitingTiles）
-  - [ ] 結果をHandAnalysisResponseに変換
+  - [ ] 結果をCheckWinningHandResponseに変換
 - [ ] 統合テストの実装
-  - [ ] 和了手の分析テスト
-  - [ ] テンパイ手の分析テスト
+  - [ ] 和了手の分析テスト（複数役、高点法適用ケース含む）
   - [ ] ノーテン手の分析テスト
 
 #### PR4: リーチ宣言API
 - [ ] リーチ宣言用DTOの追加
-  - [ ] DeclareReachRequest: リーチ宣言リクエスト（tiles, score, turn）
-  - [ ] ReachDeclarationResponse: リーチ宣言結果
+  - [ ] DeclareReachRequest: リーチ宣言リクエスト（tiles: string list（13枚）, score, turn）
+  - [ ] ReachDeclarationResponse: リーチ宣言結果（canDeclare, reason）
 - [ ] ReachDeclarationHandler.fs作成
 - [ ] リーチ宣言処理の実装（Workflowsプロジェクトへの参照追加）
 - [ ] 統合テストの実装
