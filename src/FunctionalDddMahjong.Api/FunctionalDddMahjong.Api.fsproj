@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Dto.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
+    <ProjectReference Include="..\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
+    <ProjectReference Include="..\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
+  </ItemGroup>
+
+</Project>
