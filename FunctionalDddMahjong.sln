@@ -27,6 +27,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FunctionalDddMahjong.Api", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FunctionalDddMahjong.Api.Tests", "tests\FunctionalDddMahjong.Api.Tests\FunctionalDddMahjong.Api.Tests.fsproj", "{40CCC155-0108-48D3-888D-B9B9999D6499}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FunctionalDddMahjong.ApplicationServices", "src\FunctionalDddMahjong.ApplicationServices\FunctionalDddMahjong.ApplicationServices.fsproj", "{4EC8693C-8F0C-401F-909E-78C001FD4F9B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FunctionalDddMahjong.ApplicationServices.Tests", "tests\FunctionalDddMahjong.ApplicationServices.Tests\FunctionalDddMahjong.ApplicationServices.Tests.fsproj", "{C9012963-78D9-4F5D-9DD7-35499764080E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +80,14 @@ Global
 		{40CCC155-0108-48D3-888D-B9B9999D6499}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40CCC155-0108-48D3-888D-B9B9999D6499}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40CCC155-0108-48D3-888D-B9B9999D6499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC8693C-8F0C-401F-909E-78C001FD4F9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC8693C-8F0C-401F-909E-78C001FD4F9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC8693C-8F0C-401F-909E-78C001FD4F9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC8693C-8F0C-401F-909E-78C001FD4F9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9012963-78D9-4F5D-9DD7-35499764080E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9012963-78D9-4F5D-9DD7-35499764080E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9012963-78D9-4F5D-9DD7-35499764080E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9012963-78D9-4F5D-9DD7-35499764080E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{39D5F93C-7FD2-486C-84BD-18DA77F4DDCB} = {F675E864-73ED-4204-8FF0-B1F861AABBCB}
@@ -88,5 +100,7 @@ Global
 		{CB6B821A-BA09-4FF2-ADE0-21A4FC1517A2} = {F52C74CC-248B-45EA-B3AD-94C303392B96}
 		{528FBCC6-6CE0-4E62-8EF3-DFDD5078EEBD} = {F675E864-73ED-4204-8FF0-B1F861AABBCB}
 		{40CCC155-0108-48D3-888D-B9B9999D6499} = {F52C74CC-248B-45EA-B3AD-94C303392B96}
+		{4EC8693C-8F0C-401F-909E-78C001FD4F9B} = {F675E864-73ED-4204-8FF0-B1F861AABBCB}
+		{C9012963-78D9-4F5D-9DD7-35499764080E} = {F52C74CC-248B-45EA-B3AD-94C303392B96}
 	EndGlobalSection
 EndGlobal
