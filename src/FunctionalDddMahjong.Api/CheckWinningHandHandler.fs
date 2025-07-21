@@ -1,6 +1,7 @@
 namespace FunctionalDddMahjong.Api
 
 open FunctionalDddMahjong.Domain
+open FunctionalDddMahjong.ApplicationServices
 
 /// Handles the conversion and validation of winning hand check requests
 module CheckWinningHandHandler =
@@ -43,6 +44,18 @@ module CheckWinningHandHandler =
     /// Create a ready hand from tiles
     let private createHand (tiles: Tile.Tile list) : Result<Hand.Hand, string> = Ok(Hand.Ready tiles)
 
+    /// Convert ApplicationServices response to API response
+    let private toApiResponse (response: CheckWinningHandService.CheckWinningHandResponse) : CheckWinningHandResponse =
+        { isWinningHand = response.isWinningHand
+          detectedYaku =
+            response.detectedYaku
+            |> List.map (fun y ->
+                { name = y.name
+                  displayName = y.displayName
+                  han = y.han
+                  description = y.description })
+          totalHan = response.totalHan }
+
     /// Parse and validate a winning hand check request
     /// Converts string list to Hand, ensuring exactly 14 tiles
     let parseAndValidateRequest (request: CheckWinningHandRequest) : Result<Hand.Hand, string> =
@@ -51,3 +64,9 @@ module CheckWinningHandHandler =
         |> Result.bind parseTiles
         |> Result.bind validateDuplicateLimit
         |> Result.bind createHand
+
+    /// Full pipeline: parse request, check winning hand, return response
+    let handleCheckWinningHand (request: CheckWinningHandRequest) : Result<CheckWinningHandResponse, string> =
+        parseAndValidateRequest request
+        |> Result.map CheckWinningHandService.checkWinningHand
+        |> Result.map toApiResponse

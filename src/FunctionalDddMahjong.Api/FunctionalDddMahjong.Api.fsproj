@@ -13,7 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
     <ProjectReference Include="..\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
-    <ProjectReference Include="..\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
+    <ProjectReference Include="..\FunctionalDddMahjong.ApplicationServices\FunctionalDddMahjong.ApplicationServices.fsproj" />
   </ItemGroup>
 
 </Project>

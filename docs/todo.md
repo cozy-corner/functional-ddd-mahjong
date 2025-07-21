@@ -236,15 +236,11 @@
 - [x] 入力バリデーション実装（14枚制約、牌の妥当性、重複制限）
 - [x] 単体テスト実装（26テスト）
 
-#### PR3: 和了判定API - ドメイン処理と出力変換
-- [ ] CheckWinningHandService.fs作成
-- [ ] checkWinningHand関数の実装
-  - [ ] 和了判定（Hand.isWinningHand）
-  - [ ] 役判定（YakuAnalyzer.analyzeYaku）
-  - [ ] 結果をCheckWinningHandResponseに変換
-- [ ] 統合テストの実装
-  - [ ] 和了手の分析テスト（複数役、高点法適用ケース含む）
-  - [ ] ノーテン手の分析テスト
+#### PR3: 和了判定API - ドメイン処理と出力変換 ✅
+- [x] ApplicationServicesプロジェクト作成
+- [x] CheckWinningHandService.fs作成
+- [x] checkWinningHand関数の実装
+- [x] 統合テストの実装
 
 #### PR4: リーチ宣言API
 - [ ] リーチ宣言用DTOの追加
