@@ -67,7 +67,8 @@ module CheckWinningHandService =
                   detectedYaku = yakuInfos
                   totalHan = yakuResult.TotalHan }
             | Error _ ->
-                // Winning hand but no yaku (shouldn't happen in normal Mahjong)
+                // Domain constraint violation (non-winning hand passed to yaku analysis)
+                // This case should not occur since we check isWinningHand first
                 { isWinningHand = true
                   detectedYaku = []
                   totalHan = 0 }
