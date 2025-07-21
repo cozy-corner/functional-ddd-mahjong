@@ -6,14 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Dto.fs" />
-    <Compile Include="CheckWinningHandHandler.fs" />
+    <Compile Include="CheckWinningHandService.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
     <ProjectReference Include="..\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
-    <ProjectReference Include="..\FunctionalDddMahjong.ApplicationServices\FunctionalDddMahjong.ApplicationServices.fsproj" />
+    <ProjectReference Include="..\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
   </ItemGroup>
 
 </Project>
