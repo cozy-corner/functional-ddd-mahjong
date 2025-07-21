@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateProgramFile>false</GenerateProgramFile>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +12,6 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FsUnit.xUnit" Version="6.0.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FunctionalDddMahjong.ApplicationServices\FunctionalDddMahjong.ApplicationServices.fsproj" />
