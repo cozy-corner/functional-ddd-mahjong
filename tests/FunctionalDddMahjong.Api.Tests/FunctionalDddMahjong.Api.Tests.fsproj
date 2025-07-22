@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Compile Include="CheckWinningHandHandlerTests.fs" />
+    <Compile Include="ReachDeclarationHandlerTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

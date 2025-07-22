@@ -242,13 +242,14 @@
 - [x] checkWinningHand関数の実装
 - [x] 統合テストの実装
 
-#### PR4: リーチ宣言API
-- [ ] リーチ宣言用DTOの追加
-  - [ ] DeclareReachRequest: リーチ宣言リクエスト（tiles: string list（13枚）, score, turn）
-  - [ ] ReachDeclarationResponse: リーチ宣言結果（canDeclare, reason）
-- [ ] ReachDeclarationHandler.fs作成
-- [ ] リーチ宣言処理の実装（Workflowsプロジェクトへの参照追加）
-- [ ] 統合テストの実装
+#### PR4: リーチ宣言API ✅
+- [x] リーチ宣言用DTOの追加
+  - [x] DeclareReachRequest: リーチ宣言リクエスト（tiles: string list（13枚）, score, turn, hasReached）
+  - [x] DeclareReachResponse: リーチ宣言結果（success, reachType, error）
+- [x] ReachDeclarationHandler.fs作成（メインエンドポイント`handleDeclareReach`のみpublic）
+- [x] ReachDeclarationService.fs作成（Workflowsプロジェクトとの統合）
+- [x] リーチ宣言処理の実装（バリデーション、ドメインロジック呼び出し、エラーメッセージ日本語化）
+- [x] 統合テストの実装（10テスト）
 
 ### 7.3 設計課題・技術的負債
 - [ ] **YakuAnalyzerの設計見直し**: Result型が適切かドメイン観点で検証
@@ -256,11 +257,13 @@
   - [ ] 戻り値をResult<YakuAnalysisResult, YakuError>からYakuAnalysisResultに変更検討
 
 **習得スキル**
-- [ ] **境界コンテキストの設計**: ドメインモデルの保護
-- [ ] **DTO パターン**: 外部表現とドメインモデルの分離
-- [ ] **双方向変換**: 型安全な変換関数の実装
-- [ ] **信頼境界**: 外部データの検証とサニタイゼーション
-- [ ] **エラーハンドリング**: 変換失敗の適切な処理
+- [x] **境界コンテキストの設計**: ドメインモデルの保護
+- [x] **DTO パターン**: 外部表現とドメインモデルの分離
+- [x] **双方向変換**: 型安全な変換関数の実装
+- [x] **信頼境界**: 外部データの検証とサニタイゼーション
+- [x] **エラーハンドリング**: 変換失敗の適切な処理
+- [x] **API設計**: 単一責任の原則（1つのpublic関数）
+- [x] **統合パターン**: Workflowsプロジェクトとの連携
 
 ### 7.2 永続化レイヤーの実装
 - [ ] FunctionalDddMahjong.Infrastructureプロジェクト作成

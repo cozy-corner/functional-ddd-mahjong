@@ -37,3 +37,33 @@ type CheckWinningHandResponse =
         /// Total han count (0 if not winning)
         totalHan: int
     }
+
+/// Request to declare reach
+type DeclareReachRequest =
+    {
+        /// List of tile strings representing the hand (e.g., ["1m", "2m", "3m", ...])
+        /// Must contain exactly 13 tiles
+        tiles: string list
+
+        /// Current player score
+        score: int
+
+        /// Current turn number (1-based)
+        turn: int
+
+        /// Whether the player has already declared reach
+        hasReached: bool
+    }
+
+/// Response from reach declaration
+type DeclareReachResponse =
+    {
+        /// Whether the reach declaration was successful
+        success: bool
+
+        /// Type of reach if successful ("Reach" or "DoubleReach")
+        reachType: string option
+
+        /// Error message if reach declaration failed
+        error: string option
+    }
