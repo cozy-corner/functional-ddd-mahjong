@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Dto.fs" />
     <Compile Include="CheckWinningHandHandler.fs" />
+    <Compile Include="ReachDeclarationHandler.fs" />
   </ItemGroup>
 
   <ItemGroup>
