@@ -7,12 +7,14 @@
 
   <ItemGroup>
     <Compile Include="CheckWinningHandService.fs" />
+    <Compile Include="ReachDeclarationService.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FunctionalDddMahjong.SharedKernel\FunctionalDddMahjong.SharedKernel.fsproj" />
     <ProjectReference Include="..\FunctionalDddMahjong.Domain\FunctionalDddMahjong.Domain.fsproj" />
     <ProjectReference Include="..\FunctionalDddMahjong.DomainServices\FunctionalDddMahjong.DomainServices.fsproj" />
+    <ProjectReference Include="..\FunctionalDddMahjong.Workflows\FunctionalDddMahjong.Workflows.fsproj" />
   </ItemGroup>
 
 </Project>
